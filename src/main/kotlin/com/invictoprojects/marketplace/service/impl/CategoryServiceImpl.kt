@@ -20,9 +20,9 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
         }
     }
 
-    override fun rename(category: Category, name: String) {
+    override fun rename(category: Category, name: String): Category {
         category.name = name
-        categoryRepository.save(category)
+        return categoryRepository.save(category)
     }
 
     override fun addProduct(category: Category, product: Product) {
@@ -45,16 +45,10 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
         categoryRepository.save(category)
     }
 
-    override fun deleteWithAllProducts(category: Category) {
-        categoryRepository.delete(category)
-    }
+    override fun deleteWithAllProducts(category: Category) = categoryRepository.delete(category)
 
-    override fun findByName(name: String): Category? {
-        return categoryRepository.findByName(name)
-    }
+    override fun findByName(name: String) = categoryRepository.findByName(name)
 
-    override fun findAll(): MutableIterable<Category> {
-        return categoryRepository.findAll()
-    }
+    override fun findAll(): MutableIterable<Category> = categoryRepository.findAll()
 
 }

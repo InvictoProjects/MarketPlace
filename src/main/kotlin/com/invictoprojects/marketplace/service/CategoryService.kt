@@ -7,7 +7,7 @@ interface CategoryService {
 
     fun create(name: String): Category?
 
-    fun rename(category: Category, name: String)
+    fun rename(category: Category, name: String): Category
 
     fun addProduct(category: Category, product: Product)
 

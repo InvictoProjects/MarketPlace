@@ -4,7 +4,7 @@ import javax.persistence.*
 
 @Entity
 @Table
-data class Category(
+class Category(
     @Column(unique = true) var name: String,
 
     @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.REMOVE], orphanRemoval = false)

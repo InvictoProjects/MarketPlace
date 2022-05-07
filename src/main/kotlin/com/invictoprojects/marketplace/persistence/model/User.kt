@@ -7,6 +7,6 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "users")
-data class User(
+class User(
     @Id @GeneratedValue var id: Long? = null
 )

@@ -5,7 +5,7 @@ import javax.persistence.*
 
 @Entity
 @Table
-data class Product(
+class Product(
     var name: String,
     var description: String? = null,
     var imagePath: String? = null,
