@@ -6,5 +6,9 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface CategoryRepository : CrudRepository<Category, Long> {
-    fun findByName(name: String): Category
+
+    fun existsByName(name: String): Boolean
+
+    fun findByName(name: String): Category?
+
 }

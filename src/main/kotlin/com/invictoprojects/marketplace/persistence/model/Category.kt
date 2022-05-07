@@ -1,14 +1,14 @@
 package com.invictoprojects.marketplace.persistence.model
 
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table
-class Category(
+data class Category(
     @Column(unique = true) var name: String,
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.REMOVE], orphanRemoval = false)
+    var products: MutableList<Product>,
+
     @Id @GeneratedValue var id: Long? = null
 )
