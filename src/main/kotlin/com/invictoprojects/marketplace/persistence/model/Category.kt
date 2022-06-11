@@ -7,8 +7,5 @@ import javax.persistence.*
 class Category(
     @Column(unique = true) var name: String,
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.REMOVE], orphanRemoval = false)
-    var products: MutableList<Product>,
-
     @Id @GeneratedValue var id: Long? = null
 )

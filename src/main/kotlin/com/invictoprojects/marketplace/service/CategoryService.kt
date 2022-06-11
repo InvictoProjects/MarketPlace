@@ -1,7 +1,6 @@
 package com.invictoprojects.marketplace.service
 
 import com.invictoprojects.marketplace.persistence.model.Category
-import com.invictoprojects.marketplace.persistence.model.Product
 
 interface CategoryService {
 
@@ -9,15 +8,7 @@ interface CategoryService {
 
     fun rename(category: Category, name: String): Category
 
-    fun addProduct(category: Category, product: Product)
-
-    fun addAllProducts(category: Category, productIterable: Iterable<Product>)
-
-    fun removeProduct(category: Category, product: Product)
-
-    fun removeAllProducts(category: Category, productIterable: Iterable<Product>)
-
-    fun deleteWithAllProducts(category: Category)
+    fun delete(category: Category)
 
     fun findByName(name: String): Category?
 
