@@ -5,7 +5,7 @@ import com.invictoprojects.marketplace.persistence.model.Product
 import com.invictoprojects.marketplace.persistence.repository.CategoryRepository
 import com.invictoprojects.marketplace.service.CategoryService
 import org.springframework.stereotype.Service
-import java.util.Collections
+import java.util.*
 
 @Service
 class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : CategoryService {
