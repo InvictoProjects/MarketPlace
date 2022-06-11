@@ -1,5 +1,7 @@
 package com.invictoprojects.marketplace.controller
 
+import com.invictoprojects.marketplace.dto.AuthenticationResponse
+import com.invictoprojects.marketplace.dto.LoginRequest
 import com.invictoprojects.marketplace.dto.RegisterRequest
 import com.invictoprojects.marketplace.service.AuthenticationService
 import org.springframework.http.HttpStatus
@@ -19,5 +21,10 @@ class AuthController(private val authenticationService: AuthenticationService)
     fun signup(@Valid @RequestBody registerRequest: RegisterRequest): ResponseEntity<String> {
         authenticationService.signup(registerRequest)
         return ResponseEntity("User registration is successful", HttpStatus.OK)
+    }
+
+    @PostMapping("/login")
+    fun login(@Valid @RequestBody loginRequest: LoginRequest): AuthenticationResponse {
+        return authenticationService.login(loginRequest)
     }
 }
