@@ -1,14 +1,13 @@
 package com.invictoprojects.marketplace.controller
 
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.RequestMapping
+import com.invictoprojects.marketplace.dto.RegisterRequest
+import com.invictoprojects.marketplace.service.AuthenticationService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import com.invictoprojects.marketplace.dto.RegisterRequest
-import com.invictoprojects.marketplace.persistence.repository.ProductRepository
-import com.invictoprojects.marketplace.service.AuthenticationService
-import org.springframework.http.ResponseEntity
-import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
 @RestController
