@@ -12,5 +12,7 @@ class Product(
     @ManyToOne var category: Category? = null,
     @ManyToOne var seller: User? = null,
     var price: BigDecimal,
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = [CascadeType.REMOVE], orphanRemoval = false)
+    var reviews: MutableList<Review>? = null,
     @Id @GeneratedValue var id: Long? = null
 )
