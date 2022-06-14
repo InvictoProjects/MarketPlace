@@ -4,11 +4,13 @@ import com.invictoprojects.marketplace.persistence.model.Category
 
 interface CategoryService {
 
-    fun create(name: String): Category?
+    fun create(category: Category): Category
 
-    fun rename(category: Category, name: String): Category
+    fun update(category: Category): Category
 
-    fun delete(category: Category)
+    fun deleteById(id: Long)
+
+    fun findById(id: Long): Category
 
     fun findByName(name: String): Category?
 
