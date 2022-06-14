@@ -1,6 +1,5 @@
 package com.invictoprojects.marketplace.service.impl
 
-import com.invictoprojects.marketplace.persistence.exception.InvalidNameException
 import com.invictoprojects.marketplace.persistence.model.Category
 import com.invictoprojects.marketplace.persistence.repository.CategoryRepository
 import com.invictoprojects.marketplace.service.CategoryService
@@ -11,9 +10,6 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
 
     override fun create(category: Category): Category {
         val name = category.name
-        if (name.isEmpty()) {
-            throw InvalidNameException("Name must be not empty")
-        }
         if (categoryRepository.existsByName(name)) {
             throw IllegalArgumentException("Category with a such name already exists")
         } else {
@@ -22,10 +18,6 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
     }
 
     override fun update(category: Category): Category {
-        val name = category.name
-        if (name.isEmpty()) {
-            throw InvalidNameException("Name must be not empty")
-        }
         val id = category.id!!
         if (categoryRepository.existsById(id)) {
             return categoryRepository.save(category)

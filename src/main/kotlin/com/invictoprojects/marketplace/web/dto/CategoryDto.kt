@@ -1,9 +1,10 @@
 package com.invictoprojects.marketplace.web.dto
 
-import com.invictoprojects.marketplace.persistence.model.Category
+import javax.validation.constraints.NotBlank
 
-class CategoryDto(var name: String) {
+data class CategoryDto(
 
-    fun toCategory() = Category(name = name)
+    @field:NotBlank(message = "{category.name.required}")
+    var name: String
 
-}
+)
