@@ -4,14 +4,15 @@ import com.invictoprojects.marketplace.persistence.model.Role
 import com.invictoprojects.marketplace.persistence.model.User
 import com.invictoprojects.marketplace.persistence.repository.UserRepository
 import com.invictoprojects.marketplace.service.UserService
+import javax.persistence.EntityExistsException
 import javax.persistence.EntityNotFoundException
 
 
 class UserServiceImpl(private val userRepository: UserRepository) : UserService {
 
-    override fun create(email: String, passwordHash: String): User? {
+    override fun create(email: String, passwordHash: String): User {
         return if (userRepository.existsByEmail(email)) {
-            null
+            throw EntityExistsException("User with email $email already exists")
         } else {
             val user = User(email, passwordHash)
             userRepository.save(user)
@@ -22,15 +23,17 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
         if (user.id == null) {
             throw IllegalArgumentException("User id must not be null")
         } else if (!userRepository.existsById(user.id!!)) {
-            throw EntityNotFoundException(String.format("User with id %s does not exist", user.id))
+            throw EntityNotFoundException("User with id ${user.id} does not exist")
         }
 
         userRepository.delete(user)
     }
 
     override fun update(user: User): User {
-        if (!userRepository.existsById(user.id!!)) {
-            throw EntityNotFoundException("User with id " + user.id + " does not exist")
+        if (user.id == null) {
+            throw IllegalArgumentException("User id must not be null")
+        } else if (!userRepository.existsById(user.id!!)) {
+            throw EntityNotFoundException("User with id ${user.id} does not exist")
         }
 
         return userRepository.save(user)
@@ -41,24 +44,26 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
     }
 
     override fun findByEmail(email: String): User? {
-        return if (!userRepository.existsByEmail(email)) {
-            null
+        if (!userRepository.existsByEmail(email)) {
+            throw EntityNotFoundException("User with email $email does not exist")
         } else {
             return userRepository.findByEmail(email)
         }
     }
 
-    override fun findById(id: Long): User? {
-        return if (!userRepository.existsById(id)) {
-            null
+    override fun findById(id: Long): User {
+        if (!userRepository.existsById(id)) {
+            throw EntityNotFoundException("User with id $id does not exist")
         } else {
             return userRepository.findById(id).get()
         }
     }
 
     override fun updatePasswordHash(user: User, newPasswordHash: String) {
-        if (!userRepository.existsById(user.id!!)) {
-            throw EntityNotFoundException("User doesn't exist")
+        if (user.id == null) {
+            throw IllegalArgumentException("User id must not be null")
+        } else if (!userRepository.existsById(user.id!!)) {
+            throw EntityNotFoundException("User with id ${user.id} does not exist")
         }
 
         user.passwordHash = newPasswordHash
@@ -66,8 +71,10 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
     }
 
     override fun updateRole(user: User, role: Role) {
-        if (!userRepository.existsById(user.id!!)) {
-            throw EntityNotFoundException("User doesn't exist")
+        if (user.id == null) {
+            throw IllegalArgumentException("User id must not be null")
+        } else if (!userRepository.existsById(user.id!!)) {
+            throw EntityNotFoundException("User with id ${user.id} does not exist")
         }
 
         user.role = role
