@@ -90,12 +90,4 @@ class CategoryController(
         }
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handleValidationExceptions(validException: MethodArgumentNotValidException): Map<String, String?>? {
-        val firstError = validException.bindingResult.allErrors.first()
-        val errorMessage = firstError.defaultMessage
-        return mapOf("error" to errorMessage)
-    }
-
 }
