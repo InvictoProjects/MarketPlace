@@ -1,6 +1,7 @@
 package com.invictoprojects.marketplace.dto
 
 import com.invictoprojects.marketplace.persistence.model.Order
+import com.invictoprojects.marketplace.persistence.model.OrderProduct
 
 object MappingUtils {
 
@@ -21,6 +22,14 @@ object MappingUtils {
             status = orderCreationDto.status,
             date = orderCreationDto.date,
             destination = orderCreationDto.destination
+        )
+    }
+
+    fun convertToDto(orderProduct: OrderProduct): OrderDetailDto {
+        return OrderDetailDto(
+            order = orderProduct.order,
+            product = orderProduct.product,
+            amount = orderProduct.amount
         )
     }
 
