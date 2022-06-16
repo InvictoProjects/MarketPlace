@@ -122,14 +122,17 @@ class OrderServiceImpl(
         return orderRepository.findByDateBetween(start, end)
     }
 
-    override fun findOrderProductsByOrder(order: Order): MutableIterable<OrderProduct> {
-        if (order.id == null) {
-            throw IllegalArgumentException("Order id must not be null")
-        } else if (!orderRepository.existsById(order.id!!)) {
-            throw EntityNotFoundException("Order with id ${order.id} does not exist")
+    override fun findOrderProductsByOrder(orderId: Long): MutableIterable<OrderProduct> {
+        if (!orderRepository.existsById(orderId)) {
+            throw EntityNotFoundException("Order with id $orderId does not exist")
         }
 
+        val order = orderRepository.findById(orderId).get()
         return orderProductRepository.findByOrder(order)
+    }
+
+    override fun findOrderByPeriod(start: Date, end: Date): MutableIterable<Order> {
+        return orderRepository.findByDateBetween(start, end)
     }
 
     override fun updateStatus(order: Order, status: OrderStatus) {
