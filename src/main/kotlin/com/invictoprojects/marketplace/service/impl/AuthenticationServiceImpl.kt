@@ -49,11 +49,19 @@ class AuthenticationServiceImpl(
         return AuthenticationResponse(
             token,
             refreshToken,
-            Instant.now().plusMillis(jwtProvider.jwtExpirationInMillis), email)
+            Instant.now().plusMillis(jwtProvider.jwtExpirationInMillis), email
+        )
     }
 
     override fun refreshToken(refreshTokenRequest: RefreshTokenRequest): AuthenticationResponse {
-        TODO("Not yet implemented")
+        refreshTokenService.validateRefreshToken(refreshTokenRequest.refreshToken, refreshTokenRequest.email)
+        val token = jwtProvider.generateTokenWithEmail(refreshTokenRequest.email)
+        return AuthenticationResponse(
+            token,
+            refreshTokenRequest.refreshToken,
+            Instant.now().plusMillis(jwtProvider.jwtExpirationInMillis),
+            refreshTokenRequest.email
+        )
     }
 
 }
