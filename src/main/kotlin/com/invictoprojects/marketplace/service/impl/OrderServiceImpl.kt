@@ -3,13 +3,17 @@ package com.invictoprojects.marketplace.service.impl
 import com.invictoprojects.marketplace.persistence.model.*
 import com.invictoprojects.marketplace.persistence.repository.OrderProductRepository
 import com.invictoprojects.marketplace.persistence.repository.OrderRepository
+import com.invictoprojects.marketplace.persistence.repository.ProductRepository
 import com.invictoprojects.marketplace.service.OrderService
+import org.springframework.stereotype.Service
 import java.util.*
 import javax.persistence.EntityNotFoundException
 
+@Service
 class OrderServiceImpl(
     private val orderRepository: OrderRepository,
-    private val orderProductRepository: OrderProductRepository
+    private val orderProductRepository: OrderProductRepository,
+    private val productRepository: ProductRepository
 ) : OrderService {
 
     override fun create(
@@ -43,22 +47,21 @@ class OrderServiceImpl(
         return orderRepository.save(order)
     }
 
-    override fun addProduct(order: Order, product: Product, amount: Int) {
-        if (order.id == null) {
-            throw IllegalArgumentException("Order id must not be null")
-        } else if (!orderRepository.existsById(order.id!!)) {
-            throw EntityNotFoundException("Order with id ${order.id} does not exist")
+    override fun addProduct(orderId: Long, productId: Long, amount: Int) {
+        if (!orderRepository.existsById(orderId)) {
+            throw EntityNotFoundException("Order with id $orderId does not exist")
         }
 
-        if (product.id == null) {
-            throw IllegalArgumentException("Product id must not be null")
-        } else if (!orderRepository.existsById(product.id!!)) {
-            throw EntityNotFoundException("Product with id ${order.id} does not exist")
+        if (!productRepository.existsById(productId)) {
+            throw EntityNotFoundException("Product with id $productId does not exist")
         }
 
         if (amount <= 0) {
             throw IllegalArgumentException("Product amount should be more than 0")
         }
+
+        val order = orderRepository.findById(orderId).get()
+        val product = productRepository.findById(productId).get()
 
         var orderProduct = order.orderProducts.firstOrNull { it.product.id == product.id }
 
@@ -76,24 +79,22 @@ class OrderServiceImpl(
         orderProductRepository.save(orderProduct)
     }
 
-    override fun removeProduct(order: Order, product: Product, amount: Int) {
-        if (order.id == null) {
-            throw IllegalArgumentException("Order id must not be null")
-        } else if (!orderRepository.existsById(order.id!!)) {
-            throw EntityNotFoundException("Order with id ${order.id} does not exist")
+    override fun removeProduct(orderId: Long, productId: Long, amount: Int) {
+        if (!orderRepository.existsById(orderId)) {
+            throw EntityNotFoundException("Order with id $orderId does not exist")
         }
 
-        if (product.id == null) {
-            throw IllegalArgumentException("Product id must not be null")
-        } else if (!orderRepository.existsById(product.id!!)) {
-            throw EntityNotFoundException("Product with id ${order.id} does not exist")
+        if (!productRepository.existsById(productId)) {
+            throw EntityNotFoundException("Product with id $productId does not exist")
         }
 
         if (amount <= 0) {
             throw IllegalArgumentException("Product amount should be more than 0")
         }
 
-        val orderProduct = order.orderProducts.firstOrNull { it.product.id == product.id }
+        val order = orderRepository.findById(orderId).get()
+
+        val orderProduct = order.orderProducts.firstOrNull { it.product.id == productId }
 
         if (orderProduct != null) {
             if (orderProduct.amount <= amount) {

@@ -11,9 +11,9 @@ interface OrderService {
 
     fun update(order: Order): Order
 
-    fun addProduct(order: Order, product: Product, amount: Int)
+    fun addProduct(orderId: Long, productId: Long, amount: Int)
 
-    fun removeProduct(order: Order, product: Product, amount: Int)
+    fun removeProduct(orderId: Long, productId: Long, amount: Int)
 
     fun findAll(): MutableIterable<Order>
 
