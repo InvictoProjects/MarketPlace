@@ -5,6 +5,7 @@ import com.invictoprojects.marketplace.dto.LoginRequest
 import com.invictoprojects.marketplace.dto.RefreshTokenRequest
 import com.invictoprojects.marketplace.dto.RegisterRequest
 import com.invictoprojects.marketplace.service.AuthenticationService
+import com.invictoprojects.marketplace.service.RefreshTokenService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -15,8 +16,10 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/auth")
-class AuthController(private val authenticationService: AuthenticationService)
-{
+class AuthController(
+    private val authenticationService: AuthenticationService,
+    private val refreshTokenService: RefreshTokenService
+) {
 
     @PostMapping("/signup")
     fun signup(@Valid @RequestBody registerRequest: RegisterRequest): ResponseEntity<String> {
@@ -27,6 +30,12 @@ class AuthController(private val authenticationService: AuthenticationService)
     @PostMapping("/login")
     fun login(@Valid @RequestBody loginRequest: LoginRequest): AuthenticationResponse {
         return authenticationService.login(loginRequest)
+    }
+
+    @PostMapping("/logout")
+    fun logout(@Valid @RequestBody refreshTokenRequest: RefreshTokenRequest): ResponseEntity<String> {
+        refreshTokenService.deleteRefreshToken(refreshTokenRequest.refreshToken)
+        return ResponseEntity.status(HttpStatus.OK).body("Logout successes")
     }
 
     @PostMapping("/refresh/token")
