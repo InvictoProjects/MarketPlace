@@ -42,6 +42,10 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
         return optional.get()
     }
 
+    override fun existsById(id: Long): Boolean  {
+        return categoryRepository.existsById(id)
+    }
+
     override fun findByName(name: String) = categoryRepository.findByName(name)
 
     override fun findAll(): MutableIterable<Category> = categoryRepository.findAll()

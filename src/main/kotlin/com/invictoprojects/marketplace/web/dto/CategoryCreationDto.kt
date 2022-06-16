@@ -1,12 +1,8 @@
 package com.invictoprojects.marketplace.web.dto
 
 import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotNull
 
-data class CategoryDto(
-
-    @field:NotNull(message = "{category.id.required}")
-    var id: Long,
+data class CategoryCreationDto (
 
     @field:NotBlank(message = "{category.name.required}")
     var name: String

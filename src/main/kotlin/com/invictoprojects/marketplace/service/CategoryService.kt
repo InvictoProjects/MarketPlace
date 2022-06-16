@@ -12,6 +12,8 @@ interface CategoryService {
 
     fun findById(id: Long): Category
 
+    fun existsById(id: Long): Boolean
+
     fun findByName(name: String): Category?
 
     fun findAll(): MutableIterable<Category>
