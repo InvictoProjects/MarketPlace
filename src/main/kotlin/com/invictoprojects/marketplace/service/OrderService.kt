@@ -5,7 +5,7 @@ import java.util.Date
 
 interface OrderService {
 
-    fun create(customer: User, status: OrderStatus, date: Date, destination: String, products: MutableList<OrderProduct>): Order?
+    fun create(customer: User, status: OrderStatus, date: Date, destination: String, products: MutableList<OrderProduct>): Order
 
     fun delete(order: Order)
 
@@ -17,7 +17,7 @@ interface OrderService {
 
     fun findAll(): MutableIterable<Order>
 
-    fun findById(id: Long): Order?
+    fun findById(id: Long): Order
 
     fun findByDate(start: Date, end: Date): MutableIterable<Order>
 
