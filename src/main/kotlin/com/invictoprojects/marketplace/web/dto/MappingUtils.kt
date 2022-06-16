@@ -26,7 +26,8 @@ object MappingUtils {
             imagePath = productCreationDto.imagePath,
             category = convertToEntity(productCreationDto.category),
             seller = productCreationDto.seller,
-            price = productCreationDto.price
+            price = productCreationDto.price,
+            quantity = productCreationDto.quantity
         )
     }
 
@@ -45,7 +46,8 @@ object MappingUtils {
             imagePath = product.imagePath,
             category = convertToDto(product.category),
             seller = product.seller,
-            price = product.price
+            price = product.price,
+            quantity = product.quantity
         )
     }
 }

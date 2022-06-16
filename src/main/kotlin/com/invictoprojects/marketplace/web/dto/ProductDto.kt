@@ -26,5 +26,9 @@ data class ProductDto(
     var seller: User? = null,
 
     @field:PositiveOrZero(message = "{product.price.required}")
-    var price: BigDecimal
+    var price: BigDecimal,
+
+    @field:PositiveOrZero(message = "{product.quantity.required}")
+    var quantity: Long
+
 )
