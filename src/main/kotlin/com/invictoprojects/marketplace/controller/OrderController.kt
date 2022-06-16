@@ -39,7 +39,7 @@ class OrderController (private val orderService: OrderService) {
     @GetMapping("/{id}/details")
     @ResponseBody
     fun getOrderProducts(@PathVariable id: Long): ResponseEntity<List<OrderDetailDto>> {
-        val details = orderService.findOrderProductsByOrder(id).map { order -> MappingUtils.convertToDto(order) }.toList()
+        val details = orderService.findOrderProductsByOrderId(id).map { order -> MappingUtils.convertToDto(order) }.toList()
 
         return ResponseEntity.ok().body(details)
     }
@@ -47,7 +47,7 @@ class OrderController (private val orderService: OrderService) {
     @GetMapping("/{id}/period")
     @ResponseBody
     fun getOrderByPeriod(@PathVariable id: Long, @RequestBody start: Date, @RequestBody end: Date): ResponseEntity<List<OrderDto>> {
-        val orders = orderService.findByDate(start, end).map { order -> MappingUtils.convertToDto(order) }.toList()
+        val orders = orderService.findOrderByPeriod(start, end).map { order -> MappingUtils.convertToDto(order) }.toList()
 
         return ResponseEntity.ok().body(orders)
     }

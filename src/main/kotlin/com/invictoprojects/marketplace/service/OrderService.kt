@@ -19,9 +19,7 @@ interface OrderService {
 
     fun findById(id: Long): Order
 
-    fun findByDate(start: Date, end: Date): MutableIterable<Order>
-
-    fun findOrderProductsByOrder(orderId: Long): MutableIterable<OrderProduct>
+    fun findOrderProductsByOrderId(orderId: Long): MutableIterable<OrderProduct>
 
     fun findOrderByPeriod(start: Date, end: Date): MutableIterable<Order>
 
