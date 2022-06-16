@@ -17,7 +17,7 @@ class UserDetailsServiceImpl(val userService: UserService) : UserDetailsService 
     @Throws(UsernameNotFoundException::class)
     override fun loadUserByUsername(email: String): UserDetails {
         val user = userService.findByEmail(email)
-            ?: throw UsernameNotFoundException(String.format("User name with email %s", email))
+            ?: throw UsernameNotFoundException(String.format("User name with email %s not found", email))
 
         return org.springframework.security.core.userdetails.User(
             user.email,
