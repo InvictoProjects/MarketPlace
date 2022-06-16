@@ -35,6 +35,7 @@ class AuthenticationServiceImpl(
         )
     }
 
+    @Transactional
     override fun login(loginRequest: LoginRequest): AuthenticationResponse {
         val authenticate: Authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
@@ -53,6 +54,7 @@ class AuthenticationServiceImpl(
         )
     }
 
+    @Transactional
     override fun refreshToken(refreshTokenRequest: RefreshTokenRequest): AuthenticationResponse {
         refreshTokenService.validateRefreshToken(refreshTokenRequest.refreshToken, refreshTokenRequest.email)
         val token = jwtProvider.generateTokenWithEmail(refreshTokenRequest.email)

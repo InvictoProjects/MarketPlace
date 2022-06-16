@@ -7,6 +7,7 @@ import com.invictoprojects.marketplace.service.RefreshTokenService
 import com.invictoprojects.marketplace.service.UserService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.util.*
 import javax.persistence.EntityNotFoundException
@@ -17,6 +18,7 @@ class RefreshTokenServiceImpl(
     private val refreshTokenRepository: RefreshTokenRepository
 ) : RefreshTokenService {
 
+    @Transactional
     override fun generateRefreshToken(email: String): RefreshToken {
         val user = userService.findByEmail(email) ?: throw UsernameNotFoundException(
             String.format(
@@ -45,6 +47,7 @@ class RefreshTokenServiceImpl(
         }
     }
 
+    @Transactional
     override fun deleteRefreshToken(token: String) {
         refreshTokenRepository.deleteByToken(token)
     }

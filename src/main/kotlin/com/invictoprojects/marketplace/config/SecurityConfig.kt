@@ -60,7 +60,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                     .antMatchers("/api/auth/**")
                     .permitAll()
                     .antMatchers(HttpMethod.GET, "/test/hello")
-                    .permitAll()
+                    .hasAnyAuthority("SCOPE_ADMIN")
                     .antMatchers(HttpMethod.GET, "/api/posts/")
                     .permitAll()
                     .antMatchers(HttpMethod.GET, "/api/posts/**")
