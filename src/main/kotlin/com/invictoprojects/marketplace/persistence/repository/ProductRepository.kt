@@ -10,11 +10,14 @@ import java.math.BigDecimal
 
 @Repository
 interface ProductRepository : CrudRepository<Product, Long> {
-    fun findByCategory(category: Category): List<Product>
+
+    fun findByCategory(category: Category): MutableIterable<Product>
+
     fun findBySeller(seller: User): List<Product>
 
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:keyword% OR p.description LIKE %:keyword%")
     fun findByKeyword(keyword: String): List<Product>
 
     fun findAllByPriceBetween(from: BigDecimal, to: BigDecimal): List<Product>
+
 }
