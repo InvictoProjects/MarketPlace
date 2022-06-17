@@ -47,65 +47,6 @@ class OrderServiceImpl(
         return orderRepository.save(order)
     }
 
-    override fun addProduct(orderId: Long, productId: Long, amount: Int) {
-        if (!orderRepository.existsById(orderId)) {
-            throw EntityNotFoundException("Order with id $orderId does not exist")
-        }
-
-        if (!productRepository.existsById(productId)) {
-            throw EntityNotFoundException("Product with id $productId does not exist")
-        }
-
-        if (amount <= 0) {
-            throw IllegalArgumentException("Product amount should be more than 0")
-        }
-
-        val order = orderRepository.findById(orderId).get()
-        val product = productRepository.findById(productId).get()
-
-        var orderProduct = order.orderProducts.firstOrNull { it.product.id == product.id }
-
-        if (orderProduct != null) {
-            orderProduct.amount += amount
-        } else {
-            orderProduct = OrderProduct(
-                OrderProductKey(order.id, product.id),
-                order,
-                product,
-                amount
-            )
-        }
-
-        orderProductRepository.save(orderProduct)
-    }
-
-    override fun removeProduct(orderId: Long, productId: Long, amount: Int) {
-        if (!orderRepository.existsById(orderId)) {
-            throw EntityNotFoundException("Order with id $orderId does not exist")
-        }
-
-        if (!productRepository.existsById(productId)) {
-            throw EntityNotFoundException("Product with id $productId does not exist")
-        }
-
-        if (amount <= 0) {
-            throw IllegalArgumentException("Product amount should be more than 0")
-        }
-
-        val order = orderRepository.findById(orderId).get()
-
-        val orderProduct = order.orderProducts.firstOrNull { it.product.id == productId }
-
-        if (orderProduct != null) {
-            if (orderProduct.amount <= amount) {
-                orderProductRepository.delete(orderProduct)
-            } else {
-                orderProduct.amount -= amount
-                orderProductRepository.save(orderProduct)
-            }
-        }
-    }
-
     override fun findAll(): MutableIterable<Order> {
         return orderRepository.findAll()
     }
