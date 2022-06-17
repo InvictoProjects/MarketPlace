@@ -1,6 +1,8 @@
 package com.invictoprojects.marketplace.dto
 
-class LoginRequest {
-    var username: String? = null
-    var password: String? = null
-}
+import javax.validation.constraints.NotNull
+
+class LoginRequest(
+    @NotNull var email: String,
+    @NotNull var password: String
+)

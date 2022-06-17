@@ -9,7 +9,7 @@ interface AuthenticationService {
 
     fun signup(registerRequest: RegisterRequest)
 
-    fun login(loginRequest: LoginRequest?): AuthenticationResponse?
+    fun login(loginRequest: LoginRequest): AuthenticationResponse
 
-    fun refreshToken(refreshTokenRequest: RefreshTokenRequest?): AuthenticationResponse?
+    fun refreshToken(refreshTokenRequest: RefreshTokenRequest): AuthenticationResponse
 }

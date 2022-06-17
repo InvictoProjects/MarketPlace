@@ -1,6 +1,8 @@
 package com.invictoprojects.marketplace.dto
 
-class RefreshTokenRequest {
-    val refreshToken: String? = null
-    val username: String? = null
-}
+import javax.validation.constraints.NotNull
+
+class RefreshTokenRequest(
+    @NotNull var refreshToken: String,
+    @NotNull var email: String
+)

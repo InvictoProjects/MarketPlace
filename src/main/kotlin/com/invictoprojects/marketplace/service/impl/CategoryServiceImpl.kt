@@ -8,22 +8,43 @@ import org.springframework.stereotype.Service
 @Service
 class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : CategoryService {
 
-    override fun create(name: String): Category? {
-        val isAlreadyExists = categoryRepository.existsByName(name)
-        return if (isAlreadyExists) {
-            null
+    override fun create(category: Category): Category {
+        val name = category.name
+        if (categoryRepository.existsByName(name)) {
+            throw IllegalArgumentException("Category with a such name already exists")
         } else {
-            val category = Category(name)
-            categoryRepository.save(category)
+            return categoryRepository.save(category)
         }
     }
 
-    override fun rename(category: Category, name: String): Category {
-        category.name = name
-        return categoryRepository.save(category)
+    override fun update(category: Category): Category {
+        val id = category.id!!
+        if (categoryRepository.existsById(id)) {
+            return categoryRepository.save(category)
+        } else {
+            throw IllegalArgumentException("Category with a such name does not exists")
+        }
     }
 
-    override fun delete(category: Category) = categoryRepository.delete(category)
+    override fun deleteById(id: Long) {
+        if (categoryRepository.existsById(id)) {
+            categoryRepository.deleteById(id)
+        } else {
+            throw IllegalArgumentException("Category with a such id does not exists")
+        }
+    }
+
+    override fun findById(id: Long): Category {
+        val optional = categoryRepository.findById(id)
+        if (optional.isEmpty) {
+            throw IllegalArgumentException("Category with a such id does not exists")
+        }
+        return optional.get()
+    }
+
+    override fun existsById(id: Long): Boolean  {
+        return categoryRepository.existsById(id)
+    }
 
     override fun findByName(name: String) = categoryRepository.findByName(name)
 
