@@ -4,7 +4,7 @@ import com.invictoprojects.marketplace.persistence.model.Role
 import com.invictoprojects.marketplace.persistence.model.User
 
 interface UserService {
-    fun create(email: String, passwordHash: String): User?
+    fun create(username: String, email: String, passwordHash: String): User
 
     fun delete(user: User)
 
