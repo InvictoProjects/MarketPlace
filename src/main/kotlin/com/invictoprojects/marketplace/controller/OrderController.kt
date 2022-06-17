@@ -87,34 +87,6 @@ class OrderController (private val orderService: OrderService) {
         }
     }
 
-    @PutMapping("/{id}/products/add/{productId}/{amount}")
-    @ResponseBody
-    fun addOrderProducts(@PathVariable id: Long, @PathVariable productId: Long, @PathVariable amount: Int): ResponseEntity<Any> {
-        return try {
-            orderService.addProduct(id, productId, amount)
-            val updatedOrder = orderService.findById(id)
-            val result = MappingUtils.convertToDto(updatedOrder)
-
-            ResponseEntity.ok().body(result)
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity(mapOf("error" to e.message), HttpStatus.BAD_REQUEST)
-        }
-    }
-
-    @PutMapping("/{id}/products/remove/{productId}/{amount}")
-    @ResponseBody
-    fun removeOrderProducts(@PathVariable id: Long, @PathVariable productId: Long, @PathVariable amount: Int): ResponseEntity<Any> {
-        return try {
-            orderService.removeProduct(id, productId, amount)
-            val updatedOrder = orderService.findById(id)
-            val result = MappingUtils.convertToDto(updatedOrder)
-
-            ResponseEntity.ok().body(result)
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity(mapOf("error" to e.message), HttpStatus.BAD_REQUEST)
-        }
-    }
-
     @DeleteMapping("/{id}")
     @ResponseBody
     fun deleteOrder(@PathVariable id: Long): ResponseEntity<Any> {
