@@ -1,4 +1,4 @@
-package com.invictoprojects.marketplace.web.dto
+package com.invictoprojects.marketplace.dto
 
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull

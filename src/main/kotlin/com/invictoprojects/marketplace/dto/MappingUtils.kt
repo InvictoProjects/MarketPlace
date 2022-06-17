@@ -1,4 +1,4 @@
-package com.invictoprojects.marketplace.web.dto
+package com.invictoprojects.marketplace.dto
 
 import com.invictoprojects.marketplace.persistence.model.Category
 import com.invictoprojects.marketplace.persistence.model.Product

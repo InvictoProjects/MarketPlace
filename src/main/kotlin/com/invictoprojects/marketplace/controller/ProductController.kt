@@ -1,13 +1,12 @@
-package com.invictoprojects.marketplace.web.controller
+package com.invictoprojects.marketplace.controller
 
 import com.invictoprojects.marketplace.service.ProductService
-import com.invictoprojects.marketplace.web.dto.MappingUtils
-import com.invictoprojects.marketplace.web.dto.ProductCreationDto
-import com.invictoprojects.marketplace.web.dto.ProductDto
+import com.invictoprojects.marketplace.dto.MappingUtils
+import com.invictoprojects.marketplace.dto.ProductCreationDto
+import com.invictoprojects.marketplace.dto.ProductDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.*
 
 @RestController

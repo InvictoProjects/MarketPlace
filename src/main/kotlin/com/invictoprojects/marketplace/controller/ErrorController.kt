@@ -1,4 +1,4 @@
-package com.invictoprojects.marketplace.web.controller
+package com.invictoprojects.marketplace.controller
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.MethodArgumentNotValidException
