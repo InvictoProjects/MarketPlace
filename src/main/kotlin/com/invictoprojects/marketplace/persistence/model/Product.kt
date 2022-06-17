@@ -9,8 +9,11 @@ class Product(
     var name: String,
     var description: String? = null,
     var imagePath: String? = null,
-    @ManyToOne var category: Category? = null,
+    @ManyToOne var category: Category,
     @ManyToOne var seller: User? = null,
     var price: BigDecimal,
+    var quantity: Long,
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = [CascadeType.REMOVE], orphanRemoval = false)
+    var reviews: MutableList<Review>? = null,
     @Id @GeneratedValue var id: Long? = null
 )

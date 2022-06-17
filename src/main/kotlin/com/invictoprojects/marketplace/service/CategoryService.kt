@@ -1,23 +1,18 @@
 package com.invictoprojects.marketplace.service
 
 import com.invictoprojects.marketplace.persistence.model.Category
-import com.invictoprojects.marketplace.persistence.model.Product
 
 interface CategoryService {
 
-    fun create(name: String): Category?
+    fun create(category: Category): Category
 
-    fun rename(category: Category, name: String): Category
+    fun update(category: Category): Category
 
-    fun addProduct(category: Category, product: Product)
+    fun deleteById(id: Long)
 
-    fun addAllProducts(category: Category, productIterable: Iterable<Product>)
+    fun findById(id: Long): Category
 
-    fun removeProduct(category: Category, product: Product)
-
-    fun removeAllProducts(category: Category, productIterable: Iterable<Product>)
-
-    fun deleteWithAllProducts(category: Category)
+    fun existsById(id: Long): Boolean
 
     fun findByName(name: String): Category?
 
