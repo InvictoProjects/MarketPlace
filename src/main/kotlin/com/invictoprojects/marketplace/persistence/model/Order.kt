@@ -4,7 +4,7 @@ import java.util.Date
 import javax.persistence.*
 
 @Entity
-@Table(name = "users")
+@Table(name = "orders")
 class Order(
     @ManyToOne var customer: User,
     @ManyToOne var status: OrderStatus,
