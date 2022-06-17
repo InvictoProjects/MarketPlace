@@ -44,9 +44,9 @@ class OrderController (private val orderService: OrderService) {
         return ResponseEntity.ok().body(details)
     }
 
-    @GetMapping("/{id}/period")
+    @GetMapping("/period")
     @ResponseBody
-    fun getOrderByPeriod(@PathVariable id: Long, @RequestBody start: Date, @RequestBody end: Date): ResponseEntity<List<OrderDto>> {
+    fun getOrderByPeriod(@RequestParam start: Date, @RequestParam end: Date): ResponseEntity<List<OrderDto>> {
         val orders = orderService.findOrderByPeriod(start, end).map { order -> MappingUtils.convertToDto(order) }.toList()
 
         return ResponseEntity.ok().body(orders)
