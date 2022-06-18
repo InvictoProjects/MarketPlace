@@ -6,6 +6,7 @@ import com.invictoprojects.marketplace.persistence.repository.ProductRepository
 import com.invictoprojects.marketplace.service.CategoryService
 import com.invictoprojects.marketplace.service.ProductService
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 
 @Service
@@ -40,6 +41,7 @@ class ProductServiceImpl(
 
     override fun findAll(): MutableIterable<Product> = productRepository.findAll()
 
+    @Transactional
     override fun findByCategoryId(id: Long): MutableIterable<Product> {
         if (!categoryService.existsById(id)) {
             throw IllegalArgumentException("There is no category with a such id")
