@@ -21,7 +21,7 @@ class EmailEngine(
     @Value("\${marketplace.email.recommendation.subject}") private val subject: String
 ) {
 
-    @Scheduled(cron = "*/30 * * * * *")
+    @Scheduled(cron = "* * * */7 * *")
     fun sendProductRecommendationEmails() = runBlocking {
         recommendationService.getAllUsersWithRecommendedProducts()
             .forEach { pair ->
