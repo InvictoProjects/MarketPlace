@@ -23,6 +23,7 @@ class EmailEngine(
             .toList()
 
         userService.findAll()
+            .filter { user -> user.isSubscribed }
             .forEach { user ->
                 val recommendedProducts = mutableListOf<Product>()
                 for (i in 0..2) {
