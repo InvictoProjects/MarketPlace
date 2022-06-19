@@ -64,6 +64,8 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
         }
     }
 
+    override fun findAllBySubscribedIsTrue() = userRepository.findAllBySubscribedIsTrue()
+
     override fun updatePasswordHash(user: User, newPasswordHash: String) {
         if (user.id == null) {
             throw IllegalArgumentException("User id must not be null")
