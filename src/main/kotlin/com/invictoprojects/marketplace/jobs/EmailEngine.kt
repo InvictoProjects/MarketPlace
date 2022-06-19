@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.io.StringWriter
+import kotlinx.coroutines.*
 
 @Component
 class EmailEngine(
@@ -21,30 +22,32 @@ class EmailEngine(
     @Value("marketplace.email.recommendation.subject") private val subject: String
 ) {
 
-    @Scheduled(cron = "*/20 * * * * *")
-    fun sendProductRecommendationEmails() {
+    @Scheduled(cron = "*/30 * * * * *")
+    fun sendProductRecommendationEmails() = runBlocking {
         val products = productService.findAll()
             .toList()
 
         userService.findAll()
             .filter { user -> user.isSubscribed }
             .forEach { user ->
-                val recommendedProducts = mutableListOf<Product>()
-                for (i in 0..2) {
-                    val randomIndex = (products.indices).random()
-                    val randomProduct = products[randomIndex]
-                    recommendedProducts.add(randomProduct)
+                launch {
+                    val recommendedProducts = mutableListOf<Product>()
+                    for (i in 0..2) {
+                        val randomIndex = (products.indices).random()
+                        val randomProduct = products[randomIndex]
+                        recommendedProducts.add(randomProduct)
+                    }
+
+                    val productText = createProductText(recommendedProducts)
+                    val stringWriter = StringWriter()
+                    configuration.getTemplate("recommendation_email.ftlh").process(
+                        mapOf("products" to productText),
+                        stringWriter
+                    )
+
+                    val emailText = stringWriter.buffer.toString()
+                    emailService.sendEmail(sender, personal, user.email, subject, emailText)
                 }
-
-                val productText = createProductText(recommendedProducts)
-                val stringWriter = StringWriter()
-                configuration.getTemplate("recommendation_email.ftlh").process(
-                    mapOf("products" to productText),
-                    stringWriter
-                )
-
-                val emailText = stringWriter.buffer.toString()
-                emailService.sendEmail(sender, personal, user.email, subject, emailText)
             }
     }
 
