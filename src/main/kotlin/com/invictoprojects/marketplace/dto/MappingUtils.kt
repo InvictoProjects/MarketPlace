@@ -36,7 +36,7 @@ object MappingUtils {
         return User(
             username = userDto.username,
             email = userDto.email,
-            isSubscribed = userDto.isSubscribed
+            subscribed = userDto.subscribed
         )
     }
 

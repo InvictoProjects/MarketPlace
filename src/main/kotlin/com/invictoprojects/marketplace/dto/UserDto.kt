@@ -4,7 +4,7 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
-class UserDto (
+class UserDto(
 
     @NotBlank
     var username: String,
@@ -14,6 +14,6 @@ class UserDto (
     var email: String,
 
     @NotNull
-    var isSubscribed: Boolean,
+    var subscribed: Boolean,
 
 )

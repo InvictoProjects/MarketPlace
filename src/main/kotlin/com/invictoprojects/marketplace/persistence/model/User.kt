@@ -13,6 +13,6 @@ class User(
     @Column(name = "created_date") var createdDate: Instant? = null,
     @Column(name="role_type") var role: Role = Role.USER,
     var enabled: Boolean = false,
-    var isSubscribed: Boolean = true,
+    var subscribed: Boolean = true,
     @Id @GeneratedValue var id: Long? = null
 )

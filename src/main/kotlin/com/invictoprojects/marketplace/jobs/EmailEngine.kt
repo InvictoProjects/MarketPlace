@@ -18,7 +18,7 @@ class EmailEngine(
     private val configuration: Configuration,
     @Value("\${marketplace.email.recommendation.sender}") private val sender: String,
     @Value("\${marketplace.email.recommendation.personal}") private val personal: String,
-    @Value("marketplace.email.recommendation.subject") private val subject: String
+    @Value("\${marketplace.email.recommendation.subject}") private val subject: String
 ) {
 
     @Scheduled(cron = "*/30 * * * * *")
