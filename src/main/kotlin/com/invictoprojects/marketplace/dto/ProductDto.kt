@@ -1,12 +1,9 @@
 package com.invictoprojects.marketplace.dto
 
-import com.invictoprojects.marketplace.dto.CategoryDto
 import com.invictoprojects.marketplace.persistence.model.User
 import java.math.BigDecimal
 import javax.validation.Valid
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.PositiveOrZero
+import javax.validation.constraints.*
 
 data class ProductDto(
 
@@ -30,6 +27,14 @@ data class ProductDto(
     var price: BigDecimal,
 
     @field:PositiveOrZero(message = "{product.quantity.required}")
-    var quantity: Long
+    var quantity: Long,
 
+    @field:Max(10)
+    @field:Min(1)
+    var avgRating: BigDecimal? = null,
+
+    var ratingCount: Long = 0,
+
+    @field:Valid
+    var reviews: MutableList<ReviewDto>? = null
 )
