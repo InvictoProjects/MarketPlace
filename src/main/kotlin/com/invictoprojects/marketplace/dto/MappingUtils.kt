@@ -2,6 +2,7 @@ package com.invictoprojects.marketplace.dto
 
 import com.invictoprojects.marketplace.persistence.model.Category
 import com.invictoprojects.marketplace.persistence.model.Product
+import com.invictoprojects.marketplace.persistence.model.User
 
 
 object MappingUtils {
@@ -28,6 +29,14 @@ object MappingUtils {
             seller = productCreationDto.seller,
             price = productCreationDto.price,
             quantity = productCreationDto.quantity
+        )
+    }
+
+    fun convertToEntity(userDto: UserDto): User {
+        return User(
+            username = userDto.username,
+            email = userDto.email,
+            isSubscribed = userDto.isSubscribed
         )
     }
 
