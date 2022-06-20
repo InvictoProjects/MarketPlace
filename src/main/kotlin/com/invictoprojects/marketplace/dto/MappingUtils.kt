@@ -52,6 +52,14 @@ object MappingUtils {
         )
     }
 
+    fun convertToDto(user: User): UserDto {
+        return UserDto(
+            username = user.username,
+            email = user.email,
+            subscribed = user.subscribed
+        )
+    }
+
     fun convertToDto(category: Category): CategoryDto {
         return CategoryDto(
             id = category.id!!,
@@ -76,7 +84,7 @@ object MappingUtils {
     }
 
     fun convertToDto(review: Review) = ReviewDto(
-        author = review.author!!,
+        author = convertToDto(review.author!!),
         rating = review.rating,
         date = review.date,
         content = review.content
