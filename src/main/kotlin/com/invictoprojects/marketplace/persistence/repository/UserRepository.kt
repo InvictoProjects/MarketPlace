@@ -9,4 +9,7 @@ interface UserRepository : CrudRepository<User, Long> {
     fun existsByEmail(email: String): Boolean
 
     fun findByEmail(email: String): User?
+
+    fun findAllBySubscribedIsTrue(): MutableIterable<User>
+
 }

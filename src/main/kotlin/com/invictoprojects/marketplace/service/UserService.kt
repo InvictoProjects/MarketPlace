@@ -19,4 +19,7 @@ interface UserService {
     fun updatePasswordHash(user: User, newPasswordHash: String)
 
     fun updateRole(user: User, role: Role)
+
+    fun findAllBySubscribedIsTrue(): MutableIterable<User>
+
 }
