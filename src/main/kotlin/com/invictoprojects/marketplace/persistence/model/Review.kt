@@ -11,9 +11,9 @@ import javax.persistence.Table
 @Table
 @IdClass(ReviewId::class)
 class Review(
-    @Id @ManyToOne var author: User,
-    @Id @ManyToOne var product: Product,
-    var rating: Long? = null,
+    @Id @ManyToOne var author: User? = null,
+    @Id @ManyToOne var product: Product? = null,
+    var rating: Int? = null,
     var date: Instant? = null,
-    var content: String = ""
+    var content: String
 )
