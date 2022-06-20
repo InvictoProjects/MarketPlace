@@ -2,8 +2,8 @@ package com.invictoprojects.marketplace.dto
 
 import com.invictoprojects.marketplace.persistence.model.Category
 import com.invictoprojects.marketplace.persistence.model.Product
+import com.invictoprojects.marketplace.persistence.model.Review
 import com.invictoprojects.marketplace.persistence.model.User
-
 
 object MappingUtils {
 
@@ -17,6 +17,18 @@ object MappingUtils {
     fun convertToEntity(categoryCreationDto: CategoryCreationDto): Category {
         return Category(
             name = categoryCreationDto.name
+        )
+    }
+
+    fun convertToEntity(productDto: ProductDto): Product {
+        return Product(
+            name = productDto.name,
+            description = productDto.description,
+            imagePath = productDto.imagePath,
+            category = convertToEntity(productDto.category),
+            seller = productDto.seller,
+            price = productDto.price,
+            quantity = productDto.quantity
         )
     }
 
@@ -56,7 +68,27 @@ object MappingUtils {
             category = convertToDto(product.category),
             seller = product.seller,
             price = product.price,
-            quantity = product.quantity
+            quantity = product.quantity,
+            avgRating = product.avgRating,
+            ratingCount = product.ratingCount,
+            reviews = product.reviews?.map { convertToDto(it) }?.toMutableList()
         )
     }
+
+    fun convertToDto(review: Review) = ReviewDto(
+        author = review.author!!,
+        rating = review.rating,
+        date = review.date,
+        content = review.content
+    )
+
+    fun convertToEntity(reviewDto: ReviewDto) = Review(
+        rating = reviewDto.rating,
+        content = reviewDto.content
+    )
+
+    fun convertToEntity(reviewCreationDto: ReviewCreationDto) = Review(
+        rating = reviewCreationDto.rating,
+        content = reviewCreationDto.content
+    )
 }
