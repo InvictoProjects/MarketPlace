@@ -31,10 +31,11 @@ data class ProductDto(
 
     @field:Max(10)
     @field:Min(1)
-    var avgRating: BigDecimal? = null,
+    var avgRating: Float? = null,
 
     var ratingCount: Long = 0,
 
     @field:Valid
     var reviews: MutableList<ReviewDto>? = null
+
 )
