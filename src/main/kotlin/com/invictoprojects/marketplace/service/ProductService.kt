@@ -20,5 +20,5 @@ interface ProductService {
     fun findByKeyword(keyword: String): List<Product>
 
     fun findAllByPriceBetween(from: BigDecimal, to: BigDecimal): List<Product>
-    fun updateAvgRating(product: Product, rating: BigDecimal): Product
+    fun updateAvgRating(product: Product, rating: Int? = null, prevRating: Int? = null): Product
 }

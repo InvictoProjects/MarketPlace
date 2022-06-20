@@ -63,19 +63,32 @@ class ProductServiceImpl(
         }
     }
 
-    override fun updateAvgRating(product: Product, rating: BigDecimal): Product {
+    override fun updateAvgRating(product: Product, rating: Int?, prevRating: Int?): Product {
         val productId = product.id
             ?: throw IllegalArgumentException("There is no product with a such id")
-        if (productRepository.existsById(productId)) {
+        if (!productRepository.existsById(productId)) {
             throw EntityNotFoundException("There is no product with an id = $productId")
         }
-        val updatedAvgRating = if (product.ratingCount == 0L) rating else {
-            val prevAvgRating = product.avgRating ?: BigDecimal.ZERO
-            val ratingCount = BigDecimal.valueOf(product.ratingCount)
-            ((prevAvgRating / ratingCount) + rating) / (ratingCount + BigDecimal.ONE)
+        val prevAvgRating = product.avgRating ?: 0f
+        val ratingCount = product.ratingCount
+        if (prevRating == null) {
+            if (rating == null) {
+                return product
+            } else {
+                product.avgRating =
+                    (prevAvgRating * ratingCount + rating) / (ratingCount + 1)
+                product.ratingCount++
+            }
+        } else {
+            if (rating == null) {
+                product.avgRating = if (ratingCount == 1L) null else
+                    (prevAvgRating * ratingCount - prevRating) / (ratingCount - 1)
+                product.ratingCount--
+            } else {
+                product.avgRating =
+                    (prevAvgRating * ratingCount - prevRating + rating) / ratingCount
+            }
         }
-        product.avgRating = updatedAvgRating
-        product.ratingCount++
         return productRepository.save(product)
     }
 }
