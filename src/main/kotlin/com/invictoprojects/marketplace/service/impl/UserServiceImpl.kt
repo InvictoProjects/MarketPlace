@@ -30,12 +30,17 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
     }
 
     override fun update(user: User): User {
-        if (user.id == null) {
-            throw IllegalArgumentException("User id must not be null")
-        } else if (!userRepository.existsById(user.id!!)) {
+        if (!userRepository.existsById(user.id!!)) {
             throw EntityNotFoundException("User with id ${user.id} does not exist")
         }
-
+        val optionalCurrentUser = userRepository.findById(user.id!!)
+        val current = optionalCurrentUser.get()
+        user.apply {
+            createdDate = current.createdDate
+            role = current.role
+            enabled = current.enabled
+            passwordHash = current.passwordHash
+        }
         return userRepository.save(user)
     }
 
@@ -58,6 +63,8 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
             return userRepository.findById(id).get()
         }
     }
+
+    override fun findAllBySubscribedIsTrue() = userRepository.findAllBySubscribedIsTrue()
 
     override fun updatePasswordHash(user: User, newPasswordHash: String) {
         if (user.id == null) {
