@@ -20,6 +20,8 @@ interface UserService {
 
     fun updateRole(user: User, role: Role)
 
+    fun getCurrentUser(): User
+
     fun findAllBySubscribedIsTrue(): MutableIterable<User>
 
 }
