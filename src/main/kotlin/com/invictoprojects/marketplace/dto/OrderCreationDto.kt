@@ -7,12 +7,17 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 class OrderCreationDto (
+
     @field:NotNull(message = "{order.customer.required}")
-    var customer: User,
+    var customer: UserDto,
+
     @field:NotNull(message = "{order.status.required}")
-    var status: OrderStatus,
+    var status: OrderStatusDto,
+
     @field:NotNull(message = "{order.date.required}")
     var date: Date,
+
     @field:NotBlank(message = "{order.destination.required}")
     var destination: String
+
 )
