@@ -1,9 +1,6 @@
 package com.invictoprojects.marketplace.controller
 
-import com.invictoprojects.marketplace.dto.MappingUtils
-import com.invictoprojects.marketplace.dto.OrderCreationDto
-import com.invictoprojects.marketplace.dto.OrderDetailDto
-import com.invictoprojects.marketplace.dto.OrderDto
+import com.invictoprojects.marketplace.dto.*
 import com.invictoprojects.marketplace.service.OrderService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -79,6 +76,21 @@ class OrderController (private val orderService: OrderService) {
             val order = MappingUtils.convertToEntity(orderCreationDto)
             order.id = id
             val updatedOrder = orderService.update(order)
+            val result = MappingUtils.convertToDto(updatedOrder)
+
+            ResponseEntity.ok().body(result)
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity(mapOf("error" to e.message), HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    @PutMapping("/{id}/status")
+    @ResponseBody
+    fun updateOrderStatus(@PathVariable id: Long, @Validated @RequestBody orderStatusDto: OrderStatusDto): ResponseEntity<Any> {
+        return try {
+            val orderStatus = MappingUtils.convertToEntity(orderStatusDto)
+            val order = orderService.findById(id)
+            val updatedOrder = orderService.updateStatus(order, orderStatus)
             val result = MappingUtils.convertToDto(updatedOrder)
 
             ResponseEntity.ok().body(result)
