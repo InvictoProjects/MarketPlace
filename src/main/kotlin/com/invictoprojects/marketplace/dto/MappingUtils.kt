@@ -1,9 +1,6 @@
 package com.invictoprojects.marketplace.dto
 
-import com.invictoprojects.marketplace.persistence.model.Category
-import com.invictoprojects.marketplace.persistence.model.Product
-import com.invictoprojects.marketplace.persistence.model.Review
-import com.invictoprojects.marketplace.persistence.model.User
+import com.invictoprojects.marketplace.persistence.model.*
 
 object MappingUtils {
 
@@ -22,6 +19,7 @@ object MappingUtils {
 
     fun convertToEntity(productDto: ProductDto): Product {
         return Product(
+            id = productDto.id,
             name = productDto.name,
             description = productDto.description,
             imagePath = productDto.imagePath,
@@ -99,4 +97,74 @@ object MappingUtils {
         rating = reviewCreationDto.rating,
         content = reviewCreationDto.content
     )
+
+    fun convertToEntity(orderDto: OrderDto): Order {
+        return Order(
+            id = orderDto.id,
+            customer = convertToEntity(orderDto.customer),
+            status = convertToEntity(orderDto.status),
+            date = orderDto.date,
+            destination = orderDto.destination,
+            orderProducts = orderDto.orderProducts.map { orderDetailDto -> convertToEntity(orderDetailDto) }.toMutableList()
+        )
+    }
+
+    fun convertToEntity(orderCreationDto: OrderCreationDto): Order {
+        return Order(
+            customer = convertToEntity(orderCreationDto.customer),
+            status = convertToEntity(orderCreationDto.status),
+            date = orderCreationDto.date,
+            destination = orderCreationDto.destination
+        )
+    }
+
+    fun convertToDto(order: Order): OrderDto {
+        return OrderDto(
+            id = order.id!!,
+            customer = convertToDto(order.customer),
+            status = convertToDto(order.status),
+            date = order.date,
+            destination = order.destination,
+            orderProducts = order.orderProducts.map { orderProduct -> convertToDto(orderProduct) }.toMutableList()
+        )
+    }
+
+    fun convertToCreationDto(order: Order): OrderCreationDto {
+        return OrderCreationDto(
+            customer = convertToDto(order.customer),
+            status = convertToDto(order.status),
+            date = order.date,
+            destination = order.destination
+        )
+    }
+
+    fun convertToEntity(orderStatusDto: OrderStatusDto): OrderStatus {
+        return OrderStatus.valueOf(orderStatusDto.status.uppercase())
+    }
+
+    fun convertToDto(orderStatus: OrderStatus): OrderStatusDto {
+        return OrderStatusDto(
+            status = orderStatus.toString()
+        )
+    }
+
+    fun convertToEntity(orderDetailDto: OrderDetailDto): OrderProduct {
+        return OrderProduct(
+            id = OrderProductKey(
+                orderDetailDto.order.id,
+                orderDetailDto.product.id
+            ),
+            order = convertToEntity(orderDetailDto.order),
+            product = convertToEntity(orderDetailDto.product),
+            amount = orderDetailDto.amount
+        )
+    }
+
+    fun convertToDto(orderProduct: OrderProduct): OrderDetailDto {
+        return OrderDetailDto(
+            order = convertToDto(orderProduct.order),
+            product = convertToDto(orderProduct.product),
+            amount = orderProduct.amount
+        )
+    }
 }
