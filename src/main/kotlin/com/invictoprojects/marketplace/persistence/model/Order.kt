@@ -7,7 +7,7 @@ import javax.persistence.*
 @Table(name = "orders")
 class Order(
     @ManyToOne var customer: User,
-    @ManyToOne var status: OrderStatus,
+    var status: OrderStatus,
     var date: Date,
     var destination: String,
     @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.REMOVE], orphanRemoval = false)
