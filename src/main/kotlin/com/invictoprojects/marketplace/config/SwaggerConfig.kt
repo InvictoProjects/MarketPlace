@@ -12,6 +12,7 @@ import springfox.documentation.spi.service.contexts.SecurityContext
 
 @Configuration
 class SwaggerConfig {
+
     @Bean
     fun redditCloneApi(): Docket {
         return Docket(DocumentationType.SWAGGER_2)
