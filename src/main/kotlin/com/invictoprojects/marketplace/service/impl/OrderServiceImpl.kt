@@ -72,14 +72,33 @@ class OrderServiceImpl(
         return orderRepository.findByDateBetween(start, end)
     }
 
-    override fun updateStatus(order: Order, status: OrderStatus) {
+    override fun updateStatus(order: Order, status: OrderStatus): Order {
         if (order.id == null) {
             throw IllegalArgumentException("Order id must not be null")
         } else if (!orderRepository.existsById(order.id!!)) {
             throw EntityNotFoundException("Order with id ${order.id} does not exist")
         }
 
+        if (order.status == OrderStatus.AWAITING_PAYMENT &&
+            status == OrderStatus.PAID) {
+            for (op in order.orderProducts) {
+                val product = op.product
+                product.quantity -= op.amount
+                productRepository.save(product)
+            }
+        }
+
+        if (status == OrderStatus.REFUNDED ||
+            status == OrderStatus.DECLINED ||
+            status == OrderStatus.CANCELLED) {
+            for (op in order.orderProducts) {
+                val product = op.product
+                product.quantity += op.amount
+                productRepository.save(product)
+            }
+        }
+
         order.status = status
-        orderRepository.save(order)
+        return orderRepository.save(order)
     }
 }
