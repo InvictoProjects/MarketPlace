@@ -1,6 +1,8 @@
 package com.invictoprojects.marketplace.service.impl
 
 import com.invictoprojects.marketplace.config.JwtProvider
+import com.invictoprojects.marketplace.dto.AuthenticationResponse
+import com.invictoprojects.marketplace.dto.RefreshTokenRequest
 import com.invictoprojects.marketplace.dto.RegisterRequest
 import com.invictoprojects.marketplace.persistence.model.Role
 import com.invictoprojects.marketplace.persistence.model.User
@@ -11,6 +13,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -63,5 +66,25 @@ class AuthenticationServiceTest {
 
         verify { userService.create("user", "email@gmail.com", "passwordHash") }
         confirmVerified(userService)
+    }
+
+    @Test
+    fun testRefreshToken() {
+        val refreshTokenRequest = RefreshTokenRequest("refreshToken", "email@gmail.com")
+
+        every { refreshTokenService.validateRefreshToken("refreshToken", "email@gmail.com") } returns Unit
+        every { jwtProvider.jwtExpirationInMillis } returns 1000
+        every { jwtProvider.generateTokenWithEmail("email@gmail.com") } returns "token"
+
+        val authenticationResponse = authenticationService.refreshToken(refreshTokenRequest)
+
+        verify { refreshTokenService.validateRefreshToken("refreshToken", "email@gmail.com") }
+        verify { jwtProvider.jwtExpirationInMillis }
+        verify { jwtProvider.generateTokenWithEmail("email@gmail.com") }
+
+        confirmVerified(refreshTokenService)
+        confirmVerified(jwtProvider)
+
+        assertEquals("email@gmail.com", authenticationResponse.email)
     }
 }
