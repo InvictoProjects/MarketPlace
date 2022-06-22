@@ -55,7 +55,7 @@ class OrderController (private val orderService: OrderService) {
         return try {
             val order = MappingUtils.convertToEntity(orderCreationDto)
             val createdOrder = orderService.create(order)
-            val result = MappingUtils.convertToCreationDto(createdOrder)
+            val result = MappingUtils.convertToDto(createdOrder)
 
             ResponseEntity(result, HttpStatus.CREATED)
         } catch (e: IllegalArgumentException) {
