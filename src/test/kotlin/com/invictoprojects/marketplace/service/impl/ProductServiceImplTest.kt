@@ -29,6 +29,93 @@ internal class ProductServiceImplTest {
     private lateinit var productService: ProductServiceImpl
 
     @Test
+    fun create_ReturnCreated() {
+        val categoryId = 1L
+        val category = Category("category", categoryId)
+        val product = Product(
+            name = "product1",
+            price = BigDecimal.valueOf(99.99),
+            quantity = 10L,
+            category = category
+        )
+        every { categoryService.findById(categoryId) } returns category
+        every { productRepository.save(product) } returns product
+
+        val result = productService.create(product)
+
+        assertEquals(product, result)
+    }
+
+    @Test
+    fun create_CategoryIsNotExists_ThrowException() {
+        val categoryId = 1L
+        val category1 = Category("category1", categoryId)
+        val category2 = Category("category2", categoryId)
+        val product = Product(
+            name = "product1",
+            price = BigDecimal.valueOf(99.99),
+            quantity = 10L,
+            category = category1
+        )
+        every { categoryService.findById(categoryId) } returns category2
+
+        assertThrows<java.lang.IllegalArgumentException> { productService.create(product) }
+    }
+
+    @Test
+    fun update_ReturnUpdated() {
+        val categoryId = 1L
+        val category = Category("category", categoryId)
+        val product = Product(
+            id = 1L,
+            name = "product1",
+            price = BigDecimal.valueOf(99.99),
+            quantity = 10L,
+            category = category
+        )
+        every { productRepository.existsById(1L) } returns true
+        every { categoryService.findById(categoryId) } returns category
+        every { productRepository.save(product) } returns product
+
+        val result = productService.update(product)
+
+        assertEquals(product, result)
+    }
+
+    @Test
+    fun update_ProductIsNotExists_ThrowException() {
+        val categoryId = 1L
+        val category = Category("category", categoryId)
+        val product = Product(
+            id = 1L,
+            name = "product1",
+            price = BigDecimal.valueOf(99.99),
+            quantity = 10L,
+            category = category
+        )
+        every { productRepository.existsById(1L) } returns false
+
+        assertThrows<IllegalArgumentException> { productService.update(product) }
+    }
+
+    @Test
+    fun update_CategoryIsNotExists_ThrowException() {
+        val categoryId = 1L
+        val category = Category("category", categoryId)
+        val product = Product(
+            id = 1L,
+            name = "product1",
+            price = BigDecimal.valueOf(99.99),
+            quantity = 10L,
+            category = category
+        )
+        every { productRepository.existsById(1L) } returns false
+        every { categoryService.findById(categoryId) } returns Category("")
+
+        assertThrows<IllegalArgumentException> { productService.update(product) }
+    }
+
+    @Test
     fun updateAvgRating_PrevRatingIsNull_ReturnProduct() {
         val product = Product(
             name = "product",
