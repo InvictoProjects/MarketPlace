@@ -1,11 +1,13 @@
 package com.invictoprojects.marketplace.service
 
-import com.invictoprojects.marketplace.persistence.model.Product
 import com.invictoprojects.marketplace.persistence.model.Review
-import com.invictoprojects.marketplace.persistence.model.User
 
 interface ReviewService {
-    fun create(author: User, product: Product, rating: Int, content: String): Review
+    fun create(review: Review): Review
+
+    fun update(review: Review): Review
 
     fun delete(review: Review)
+
+    fun findById(authorId: Long, productId: Long): Review
 }

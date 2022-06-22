@@ -8,6 +8,7 @@ import com.invictoprojects.marketplace.service.ProductService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
+import javax.persistence.EntityNotFoundException
 
 @Service
 class ProductServiceImpl(
@@ -50,7 +51,6 @@ class ProductServiceImpl(
         return productRepository.findByCategory(category)
     }
 
-
     override fun findByKeyword(keyword: String) = productRepository.findByKeyword(keyword)
 
     override fun findAllByPriceBetween(from: BigDecimal, to: BigDecimal) =
@@ -63,4 +63,32 @@ class ProductServiceImpl(
         }
     }
 
+    override fun updateAvgRating(product: Product, rating: Int?, prevRating: Int?): Product {
+        val productId = product.id
+            ?: throw IllegalArgumentException("There is no product with a such id")
+        if (!productRepository.existsById(productId)) {
+            throw EntityNotFoundException("There is no product with an id = $productId")
+        }
+        val prevAvgRating = product.avgRating ?: 0f
+        val ratingCount = product.ratingCount
+        if (prevRating == null) {
+            if (rating == null) {
+                return product
+            } else {
+                product.avgRating =
+                    (prevAvgRating * ratingCount + rating) / (ratingCount + 1)
+                product.ratingCount++
+            }
+        } else {
+            if (rating == null) {
+                product.avgRating = if (ratingCount == 1L) null else
+                    (prevAvgRating * ratingCount - prevRating) / (ratingCount - 1)
+                product.ratingCount--
+            } else {
+                product.avgRating =
+                    (prevAvgRating * ratingCount - prevRating + rating) / ratingCount
+            }
+        }
+        return productRepository.save(product)
+    }
 }

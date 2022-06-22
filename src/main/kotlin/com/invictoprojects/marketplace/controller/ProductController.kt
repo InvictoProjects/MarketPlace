@@ -1,9 +1,9 @@
 package com.invictoprojects.marketplace.controller
 
+import com.invictoprojects.marketplace.dto.*
 import com.invictoprojects.marketplace.service.ProductService
-import com.invictoprojects.marketplace.dto.MappingUtils
-import com.invictoprojects.marketplace.dto.ProductCreationDto
-import com.invictoprojects.marketplace.dto.ProductDto
+import com.invictoprojects.marketplace.service.ReviewService
+import com.invictoprojects.marketplace.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -11,7 +11,11 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/products")
-class ProductController(private val productService: ProductService) {
+class ProductController(
+    private val productService: ProductService,
+    private val reviewService: ReviewService,
+    private val userService: UserService
+) {
 
     @GetMapping("/{id}")
     @ResponseBody
@@ -49,7 +53,6 @@ class ProductController(private val productService: ProductService) {
         }
     }
 
-
     @PutMapping("/{id}")
     @ResponseBody
     fun updateProduct(@PathVariable id: Long, @Validated @RequestBody productCreationDto: ProductCreationDto): ResponseEntity<Any> {
@@ -76,4 +79,43 @@ class ProductController(private val productService: ProductService) {
         }
     }
 
+    @PostMapping("/{id}/review")
+    fun createReview(
+        @PathVariable id: Long,
+        @Validated @RequestBody reviewCreationDto: ReviewCreationDto
+    ): ReviewDto {
+        val review = MappingUtils.convertToEntity(reviewCreationDto)
+        val product = productService.findById(id)
+        review.author = userService.getCurrentUser()
+        review.product = product
+        reviewService.create(review)
+        review.rating?.let { productService.updateAvgRating(product, it) }
+        return MappingUtils.convertToDto(review)
+    }
+
+    @PutMapping("/{id}/review")
+    fun updateReview(
+        @PathVariable id: Long,
+        @Validated @RequestBody reviewCreationDto: ReviewCreationDto
+    ): ReviewDto {
+        val review = MappingUtils.convertToEntity(reviewCreationDto)
+        val product = productService.findById(id)
+        val author = userService.getCurrentUser()
+        val prevRating = reviewService.findById(author.id!!, id).rating
+        review.author = author
+        review.product = product
+        reviewService.update(review)
+        productService.updateAvgRating(product, review.rating, prevRating)
+        return MappingUtils.convertToDto(review)
+    }
+
+    @DeleteMapping("/{id}/review")
+    fun deleteReview(@PathVariable id: Long) {
+        val product = productService.findById(id)
+        val author = userService.getCurrentUser()
+        val review = reviewService.findById(author.id!!, id)
+        val prevRating = review.rating
+        reviewService.delete(review)
+        productService.updateAvgRating(product, prevRating = prevRating)
+    }
 }
