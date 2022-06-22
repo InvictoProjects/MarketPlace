@@ -3,15 +3,15 @@ package com.invictoprojects.marketplace.controller
 import com.invictoprojects.marketplace.exception.ErrorMessage
 import com.invictoprojects.marketplace.exception.InvalidCredentialsException
 import com.invictoprojects.marketplace.exception.NotEnoughPermissionException
-import java.time.Instant
-import javax.persistence.EntityNotFoundException
-import javax.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import java.time.Instant
+import javax.persistence.EntityNotFoundException
+import javax.servlet.http.HttpServletRequest
 
 @ControllerAdvice
 class ExceptionHandler {
