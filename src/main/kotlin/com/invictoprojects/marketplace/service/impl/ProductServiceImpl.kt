@@ -1,7 +1,10 @@
 package com.invictoprojects.marketplace.service.impl
 
+import com.invictoprojects.marketplace.exception.NotEnoughPermissionException
 import com.invictoprojects.marketplace.persistence.model.Category
 import com.invictoprojects.marketplace.persistence.model.Product
+import com.invictoprojects.marketplace.persistence.model.Role
+import com.invictoprojects.marketplace.persistence.model.User
 import com.invictoprojects.marketplace.persistence.repository.ProductRepository
 import com.invictoprojects.marketplace.service.CategoryService
 import com.invictoprojects.marketplace.service.ProductService
@@ -27,11 +30,30 @@ class ProductServiceImpl(
         if (!productRepository.existsById(product.id!!)) {
             throw IllegalArgumentException("There is no product with a such id")
         }
-        checkCategory(product.category)
-        return productRepository.save(product)
+        val optional = productRepository.findById(product.id!!)
+        if (optional.isEmpty) {
+            throw IllegalArgumentException("Product with a such id does not exists")
+        }
+        val savedProduct = optional.get()
+        if (product.seller != savedProduct.seller) {
+            throw NotEnoughPermissionException("Don't have permission to delete this product")
+        }
+        checkCategory(savedProduct.category)
+        return productRepository.save(savedProduct)
     }
 
-    override fun deleteById(id: Long) = productRepository.deleteById(id)
+    override fun deleteById(user: User, id: Long) {
+        val optional = productRepository.findById(id)
+        if (optional.isEmpty) {
+            throw IllegalArgumentException("Product with a such id does not exists")
+        }
+        val product = optional.get()
+        if (user == product.seller || Role.USER == user.role) {
+            productRepository.deleteById(id)
+        } else {
+            throw NotEnoughPermissionException("Don't have permission to delete this product")
+        }
+    }
 
     override fun findById(id: Long): Product {
         val optional = productRepository.findById(id)

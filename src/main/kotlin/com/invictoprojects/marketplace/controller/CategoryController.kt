@@ -1,11 +1,11 @@
 package com.invictoprojects.marketplace.controller
 
-import com.invictoprojects.marketplace.service.CategoryService
-import com.invictoprojects.marketplace.service.ProductService
 import com.invictoprojects.marketplace.dto.CategoryCreationDto
 import com.invictoprojects.marketplace.dto.CategoryDto
 import com.invictoprojects.marketplace.dto.MappingUtils
 import com.invictoprojects.marketplace.dto.ProductDto
+import com.invictoprojects.marketplace.service.CategoryService
+import com.invictoprojects.marketplace.service.ProductService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

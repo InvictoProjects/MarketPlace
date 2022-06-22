@@ -1,6 +1,5 @@
 package com.invictoprojects.marketplace.dto
 
-import com.invictoprojects.marketplace.dto.CategoryDto
 import com.invictoprojects.marketplace.persistence.model.User
 import java.math.BigDecimal
 import javax.validation.Valid
