@@ -6,13 +6,13 @@ import com.invictoprojects.marketplace.persistence.model.User
 import com.invictoprojects.marketplace.persistence.repository.OrderProductRepository
 import com.invictoprojects.marketplace.persistence.repository.OrderRepository
 import com.invictoprojects.marketplace.persistence.repository.ProductRepository
+import io.mockk.Runs
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.just
-import io.mockk.Runs
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
