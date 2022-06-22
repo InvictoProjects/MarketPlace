@@ -2,6 +2,7 @@ package com.invictoprojects.marketplace.controller
 
 import com.invictoprojects.marketplace.exception.ErrorMessage
 import com.invictoprojects.marketplace.exception.InvalidCredentialsException
+import com.invictoprojects.marketplace.exception.NotEnoughPermissionException
 import java.time.Instant
 import javax.persistence.EntityNotFoundException
 import javax.servlet.http.HttpServletRequest
@@ -26,6 +27,7 @@ class ExceptionHandler {
             is EntityNotFoundException -> HttpStatus.NOT_FOUND
             is InvalidCredentialsException -> HttpStatus.UNAUTHORIZED
             is UsernameNotFoundException -> HttpStatus.NOT_FOUND
+            is NotEnoughPermissionException -> HttpStatus.FORBIDDEN
             else -> HttpStatus.INTERNAL_SERVER_ERROR
         }
         return buildResponseEntity(status, listOf(ex.message), request)
