@@ -67,10 +67,10 @@ class OrderController(private val orderService: OrderService) {
     fun createOrder(
         @Validated @RequestBody
         orderCreationDto: OrderCreationDto
-    ): ResponseEntity<OrderCreationDto> {
+    ): ResponseEntity<OrderDto> {
         val order = MappingUtils.convertToEntity(orderCreationDto)
         val createdOrder = orderService.create(order)
-        val result = MappingUtils.convertToCreationDto(createdOrder)
+        val result = MappingUtils.convertToDto(createdOrder)
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result)
     }
