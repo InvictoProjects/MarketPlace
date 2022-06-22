@@ -11,6 +11,7 @@ import com.invictoprojects.marketplace.service.RefreshTokenService
 import com.invictoprojects.marketplace.service.UserService
 import io.mockk.confirmVerified
 import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
@@ -46,21 +47,11 @@ class AuthenticationServiceTest {
     @MockK
     private lateinit var refreshTokenService: RefreshTokenService
 
+    @InjectMockKs
     private lateinit var authenticationService: AuthenticationServiceImpl
 
-    @BeforeEach
-    fun setUp() {
-        authenticationService = AuthenticationServiceImpl(
-            userService,
-            passwordEncoder,
-            authenticationManager,
-            jwtProvider,
-            refreshTokenService
-        )
-    }
-
     @Test
-    fun testSignUp() {
+    fun signup_RegisterRequestValid_UserCreated() {
         val instant = Instant.now()
         val user = User("user", "email@gmail.com", "passwordHash", instant, Role.USER, true, true)
 
@@ -72,11 +63,11 @@ class AuthenticationServiceTest {
         authenticationService.signup(registerRequest)
 
         verify { userService.create("user", "email@gmail.com", "passwordHash") }
-        confirmVerified(userService)
+        confirmVerified()
     }
 
     @Test
-    fun testRefreshToken() {
+    fun refreshToken_RefreshTokenRequestValid_NewTokenGenerated() {
         val refreshTokenRequest = RefreshTokenRequest("refreshToken", "email@gmail.com")
 
         every { refreshTokenService.validateRefreshToken("refreshToken", "email@gmail.com") } returns Unit
@@ -89,8 +80,7 @@ class AuthenticationServiceTest {
         verify { jwtProvider.jwtExpirationInMillis }
         verify { jwtProvider.generateTokenWithEmail("email@gmail.com") }
 
-        confirmVerified(refreshTokenService)
-        confirmVerified(jwtProvider)
+        confirmVerified()
 
         assertEquals("email@gmail.com", authenticationResponse.email)
         assertEquals("refreshToken", authenticationResponse.refreshToken)
@@ -99,29 +89,32 @@ class AuthenticationServiceTest {
     }
 
     @Test
-    fun testLogin() {
+    fun login_LoginRequestValid_TokenGenerated() {
         every { authentication.name } returns "email@gmail.com"
         every { authenticationManager.authenticate(any()) } returns authentication
         every { jwtProvider.jwtExpirationInMillis } returns 1000
         every { jwtProvider.generateToken(authentication) } returns "token"
 
         val refreshToken = RefreshToken(
-            "token",
+            "refreshToken",
             Instant.now(),
             User("username", "email@gmail.com", "passwordHash", Instant.now(), Role.USER, true, true)
         )
 
         every { refreshTokenService.generateRefreshToken("email@gmail.com") } returns refreshToken
 
-        authenticationService.login(LoginRequest("email@gmail.com", "password"))
+        val authenticationResponse = authenticationService.login(LoginRequest("email@gmail.com", "password"))
 
         verify { authenticationManager.authenticate(any()) }
         verify { jwtProvider.generateToken(authentication) }
         verify { jwtProvider.jwtExpirationInMillis }
         verify { refreshTokenService.generateRefreshToken("email@gmail.com") }
 
-        confirmVerified(authenticationManager)
-        confirmVerified(jwtProvider)
-        confirmVerified(refreshTokenService)
+        confirmVerified()
+
+        assertEquals("email@gmail.com", authenticationResponse.email)
+        assertEquals("refreshToken", authenticationResponse.refreshToken)
+        assertEquals("token", authenticationResponse.authenticationToken)
+        assertNotNull(authenticationResponse.expiresAt)
     }
 }
