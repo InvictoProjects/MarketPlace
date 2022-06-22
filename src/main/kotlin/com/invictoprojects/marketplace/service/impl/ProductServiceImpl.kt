@@ -11,7 +11,6 @@ import com.invictoprojects.marketplace.service.ProductService
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.math.BigDecimal
 import javax.persistence.EntityNotFoundException
 
 @Service
@@ -79,10 +78,10 @@ class ProductServiceImpl(
         return productRepository.findByCategory(category)
     }
 
-    override fun findByKeyword(keyword: String) = productRepository.findByKeyword(keyword)
-
-    override fun findAllByPriceBetween(from: BigDecimal, to: BigDecimal) =
-        productRepository.findAllByPriceBetween(from, to)
+    override fun search(keywords: String, page: Int, perPage: Int): MutableList<Product> {
+        val pageable = PageRequest.of(page, perPage)
+        return productRepository.findByKeyword(keywords, pageable).toList()
+    }
 
     fun checkCategory(category: Category) {
         val foundCategory = categoryService.findById(category.id!!)
