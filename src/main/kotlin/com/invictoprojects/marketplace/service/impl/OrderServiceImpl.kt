@@ -44,6 +44,13 @@ class OrderServiceImpl(
             throw EntityNotFoundException("Order with id ${order.id} does not exist")
         }
 
+        val oldStatus = orderRepository.findById(order.id!!).get().status
+        val newStatus = order.status
+
+        if (oldStatus != newStatus) {
+            updateProductsByStatusAndOrder(oldStatus, newStatus, order)
+        }
+
         return orderRepository.save(order)
     }
 
@@ -72,15 +79,13 @@ class OrderServiceImpl(
         return orderRepository.findByDateBetween(start, end)
     }
 
-    override fun updateStatus(order: Order, status: OrderStatus): Order {
-        if (order.id == null) {
-            throw IllegalArgumentException("Order id must not be null")
-        } else if (!orderRepository.existsById(order.id!!)) {
-            throw EntityNotFoundException("Order with id ${order.id} does not exist")
-        }
-
-        if (order.status == OrderStatus.AWAITING_PAYMENT &&
-            status == OrderStatus.PAID) {
+    private fun updateProductsByStatusAndOrder(
+        oldStatus: OrderStatus,
+        newStatus: OrderStatus,
+        order: Order
+    ) {
+        if (oldStatus == OrderStatus.AWAITING_PAYMENT &&
+            newStatus == OrderStatus.PAID) {
             for (op in order.orderProducts) {
                 val product = op.product
                 product.quantity -= op.amount
@@ -88,17 +93,14 @@ class OrderServiceImpl(
             }
         }
 
-        if (status == OrderStatus.REFUNDED ||
-            status == OrderStatus.DECLINED ||
-            status == OrderStatus.CANCELLED) {
+        if (newStatus == OrderStatus.REFUNDED ||
+            newStatus == OrderStatus.DECLINED ||
+            newStatus == OrderStatus.CANCELLED) {
             for (op in order.orderProducts) {
                 val product = op.product
                 product.quantity += op.amount
                 productRepository.save(product)
             }
         }
-
-        order.status = status
-        return orderRepository.save(order)
     }
 }
