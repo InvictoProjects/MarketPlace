@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-
 @RestController
 @RequestMapping("/api/users")
 class UserController(
@@ -25,5 +24,4 @@ class UserController(
         val result = userService.update(user)
         return ResponseEntity.ok().body(result)
     }
-
 }

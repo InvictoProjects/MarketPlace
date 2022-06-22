@@ -2,7 +2,7 @@ package com.invictoprojects.marketplace.dto
 
 import javax.validation.constraints.NotNull
 
-class OrderDetailDto (
+class OrderDetailDto(
 
     @field:NotNull(message = "{orderDetail.order.required}")
     var order: OrderDto,

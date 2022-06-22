@@ -31,5 +31,4 @@ class Category(
         result = 31 * result + (id?.hashCode() ?: 0)
         return result
     }
-
 }

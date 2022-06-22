@@ -11,7 +11,7 @@ class User(
     @Email var email: String,
     @Column(name = "password_hash") var passwordHash: String? = null,
     @Column(name = "created_date") var createdDate: Instant? = null,
-    @Column(name="role_type") var role: Role = Role.USER,
+    @Column(name = "role_type") var role: Role = Role.USER,
     var enabled: Boolean = false,
     var subscribed: Boolean = true,
     @Id @GeneratedValue

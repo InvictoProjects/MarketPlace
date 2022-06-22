@@ -43,7 +43,7 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
         return optional.get()
     }
 
-    override fun existsById(id: Long): Boolean  {
+    override fun existsById(id: Long): Boolean {
         return categoryRepository.existsById(id)
     }
 
@@ -53,5 +53,4 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
         val pageable = PageRequest.of(page, perPage)
         return categoryRepository.findAll(pageable)
     }
-
 }

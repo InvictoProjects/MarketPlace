@@ -23,7 +23,7 @@ class AuthenticationServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManager: AuthenticationManager,
     private val jwtProvider: JwtProvider,
-    private val refreshTokenService: RefreshTokenService,
+    private val refreshTokenService: RefreshTokenService
 ) : AuthenticationService {
 
     @Transactional

@@ -4,7 +4,7 @@ import java.util.*
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
-class OrderDto (
+class OrderDto(
 
     @field:NotNull(message = "{order.id.required}")
     var id: Long,

@@ -61,7 +61,7 @@ object MappingUtils {
     fun convertToDto(category: Category): CategoryDto {
         return CategoryDto(
             id = category.id!!,
-            name = category.name,
+            name = category.name
         )
     }
 

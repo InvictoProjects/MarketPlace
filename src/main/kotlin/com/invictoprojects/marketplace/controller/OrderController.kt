@@ -10,7 +10,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("/api/orders")
-class OrderController (private val orderService: OrderService) {
+class OrderController(private val orderService: OrderService) {
 
     @GetMapping("/{id}")
     @ResponseBody

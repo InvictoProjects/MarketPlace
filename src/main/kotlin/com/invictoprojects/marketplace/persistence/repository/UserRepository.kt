@@ -11,5 +11,4 @@ interface UserRepository : CrudRepository<User, Long> {
     fun findByEmail(email: String): User?
 
     fun findAllBySubscribedIsTrue(): MutableIterable<User>
-
 }

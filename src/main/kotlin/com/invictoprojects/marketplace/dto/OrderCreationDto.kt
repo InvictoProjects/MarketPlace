@@ -4,7 +4,7 @@ import java.util.*
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
-class OrderCreationDto (
+class OrderCreationDto(
 
     @field:NotNull(message = "{order.customer.required}")
     var customer: UserDto,
