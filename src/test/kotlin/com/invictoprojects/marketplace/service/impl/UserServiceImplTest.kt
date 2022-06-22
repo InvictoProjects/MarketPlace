@@ -3,10 +3,14 @@ package com.invictoprojects.marketplace.service.impl
 import com.invictoprojects.marketplace.persistence.model.Role
 import com.invictoprojects.marketplace.persistence.model.User
 import com.invictoprojects.marketplace.persistence.repository.UserRepository
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.confirmVerified
+import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.just
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -220,7 +224,6 @@ internal class UserServiceImplTest {
         verify(exactly = 0) { userRepository.findByEmail(user.email) }
         confirmVerified(userRepository)
     }
-
 
     @Test
     fun updatePasswordHash_ReturnUser() {
