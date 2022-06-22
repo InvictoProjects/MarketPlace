@@ -15,5 +15,4 @@ interface ProductRepository : PagingAndSortingRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:keyword% OR p.description LIKE %:keyword%")
     fun findByKeyword(keyword: String, pageable: Pageable): Page<Product>
-
 }

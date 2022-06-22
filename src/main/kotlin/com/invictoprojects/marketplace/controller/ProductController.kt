@@ -1,13 +1,26 @@
 package com.invictoprojects.marketplace.controller
 
-import com.invictoprojects.marketplace.dto.*
+import com.invictoprojects.marketplace.dto.MappingUtils
+import com.invictoprojects.marketplace.dto.ProductCreationDto
+import com.invictoprojects.marketplace.dto.ProductDto
+import com.invictoprojects.marketplace.dto.ReviewCreationDto
+import com.invictoprojects.marketplace.dto.ReviewDto
 import com.invictoprojects.marketplace.service.ProductService
 import com.invictoprojects.marketplace.service.ReviewService
 import com.invictoprojects.marketplace.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/products")
@@ -39,18 +52,24 @@ class ProductController(
 
     @GetMapping("/search")
     @ResponseBody
-    fun search(@RequestParam(name = "q") keywords: String,
-               @RequestParam(defaultValue = "0") page: Int,
-               @RequestParam(name = "per_page", defaultValue = "30") perPage: Int): ResponseEntity<List<ProductDto>> {
+    fun search(
+        @RequestParam(name = "q") keywords: String,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(name = "per_page", defaultValue = "30") perPage: Int
+    ): ResponseEntity<List<ProductDto>> {
         val products = productService.search(keywords, page, perPage)
             .map { product -> MappingUtils.convertToDto(product) }
             .toList()
-        return ResponseEntity.ok().body(products)
+        return ResponseEntity.ok()
+            .body(products)
     }
 
     @PostMapping
     @ResponseBody
-    fun createProduct(@Validated @RequestBody productCreationDto: ProductCreationDto): ResponseEntity<ProductDto> {
+    fun createProduct(
+        @Validated @RequestBody
+        productCreationDto: ProductCreationDto
+    ): ResponseEntity<ProductDto> {
         val currentUser = userService.getCurrentUser()
         productCreationDto.seller = currentUser
         val product = MappingUtils.convertToEntity(productCreationDto)
@@ -63,7 +82,8 @@ class ProductController(
     @ResponseBody
     fun updateProduct(
         @PathVariable id: Long,
-        @Validated @RequestBody productCreationDto: ProductCreationDto
+        @Validated @RequestBody
+        productCreationDto: ProductCreationDto
     ): ResponseEntity<ProductDto> {
         val currentUser = userService.getCurrentUser()
         productCreationDto.seller = currentUser
@@ -85,7 +105,8 @@ class ProductController(
     @PostMapping("/{id}/review")
     fun createReview(
         @PathVariable id: Long,
-        @Validated @RequestBody reviewCreationDto: ReviewCreationDto
+        @Validated @RequestBody
+        reviewCreationDto: ReviewCreationDto
     ): ResponseEntity<ReviewDto> {
         val review = MappingUtils.convertToEntity(reviewCreationDto)
         val product = productService.findById(id)
@@ -100,7 +121,8 @@ class ProductController(
     @PutMapping("/{id}/review")
     fun updateReview(
         @PathVariable id: Long,
-        @Validated @RequestBody reviewCreationDto: ReviewCreationDto
+        @Validated @RequestBody
+        reviewCreationDto: ReviewCreationDto
     ): ResponseEntity<ReviewDto> {
         val review = MappingUtils.convertToEntity(reviewCreationDto)
         val product = productService.findById(id)

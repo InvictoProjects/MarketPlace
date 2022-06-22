@@ -10,5 +10,4 @@ interface CategoryRepository : PagingAndSortingRepository<Category, Long> {
     fun existsByName(name: String): Boolean
 
     fun findByName(name: String): Category?
-
 }
