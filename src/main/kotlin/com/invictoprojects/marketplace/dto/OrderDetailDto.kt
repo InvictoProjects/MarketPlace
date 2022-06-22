@@ -1,8 +1,5 @@
 package com.invictoprojects.marketplace.dto
 
-import com.invictoprojects.marketplace.persistence.model.*
-import java.util.*
-import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 class OrderDetailDto (

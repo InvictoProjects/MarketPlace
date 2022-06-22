@@ -59,13 +59,7 @@ class OrderController (private val orderService: OrderService) {
     fun createOrder(@Validated @RequestBody orderCreationDto: OrderCreationDto): ResponseEntity<Any> {
         return try {
             val order = MappingUtils.convertToEntity(orderCreationDto)
-            val createdOrder = orderService.create(
-                order.customer,
-                order.status,
-                order.date,
-                order.destination,
-                order.orderProducts
-            )
+            val createdOrder = orderService.create(order)
             val result = MappingUtils.convertToCreationDto(createdOrder)
 
             ResponseEntity(result, HttpStatus.CREATED)
@@ -81,21 +75,6 @@ class OrderController (private val orderService: OrderService) {
             val order = MappingUtils.convertToEntity(orderCreationDto)
             order.id = id
             val updatedOrder = orderService.update(order)
-            val result = MappingUtils.convertToDto(updatedOrder)
-
-            ResponseEntity.ok().body(result)
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity(mapOf("error" to e.message), HttpStatus.BAD_REQUEST)
-        }
-    }
-
-    @PutMapping("/{id}/status")
-    @ResponseBody
-    fun updateOrderStatus(@PathVariable id: Long, @Validated @RequestBody orderStatusDto: OrderStatusDto): ResponseEntity<Any> {
-        return try {
-            val orderStatus = MappingUtils.convertToEntity(orderStatusDto)
-            val order = orderService.findById(id)
-            val updatedOrder = orderService.updateStatus(order, orderStatus)
             val result = MappingUtils.convertToDto(updatedOrder)
 
             ResponseEntity.ok().body(result)
