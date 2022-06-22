@@ -5,6 +5,7 @@ import com.invictoprojects.marketplace.persistence.repository.OrderProductReposi
 import com.invictoprojects.marketplace.persistence.repository.OrderRepository
 import com.invictoprojects.marketplace.persistence.repository.ProductRepository
 import com.invictoprojects.marketplace.service.OrderService
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.util.*
 import javax.persistence.EntityNotFoundException
@@ -16,14 +17,13 @@ class OrderServiceImpl(
     private val productRepository: ProductRepository
 ) : OrderService {
 
-    override fun create(
-        customer: User,
-        status: OrderStatus,
-        date: Date,
-        destination: String,
-        products: MutableList<OrderProduct>
-    ): Order {
-        val order = Order(customer, status, date, destination, products)
+    override fun create(order: Order): Order {
+        if (order.id == null) {
+            throw IllegalArgumentException("Order id must not be null")
+        } else if (!orderRepository.existsById(order.id!!)) {
+            throw EntityNotFoundException("Order with id ${order.id} does not exist")
+        }
+
         return orderRepository.save(order)
     }
 
@@ -44,11 +44,19 @@ class OrderServiceImpl(
             throw EntityNotFoundException("Order with id ${order.id} does not exist")
         }
 
+        val oldStatus = orderRepository.findById(order.id!!).get().status
+        val newStatus = order.status
+
+        if (oldStatus != newStatus) {
+            updateProductsByStatusAndOrder(oldStatus, newStatus, order)
+        }
+
         return orderRepository.save(order)
     }
 
-    override fun findAll(): MutableIterable<Order> {
-        return orderRepository.findAll()
+    override fun findAllPageable(page: Int, perPage: Int): MutableIterable<Order> {
+        val pageable = PageRequest.of(page, perPage)
+        return orderRepository.findAll(pageable)
     }
 
     override fun findById(id: Long): Order {
@@ -72,15 +80,13 @@ class OrderServiceImpl(
         return orderRepository.findByDateBetween(start, end)
     }
 
-    override fun updateStatus(order: Order, status: OrderStatus): Order {
-        if (order.id == null) {
-            throw IllegalArgumentException("Order id must not be null")
-        } else if (!orderRepository.existsById(order.id!!)) {
-            throw EntityNotFoundException("Order with id ${order.id} does not exist")
-        }
-
-        if (order.status == OrderStatus.AWAITING_PAYMENT &&
-            status == OrderStatus.PAID) {
+    private fun updateProductsByStatusAndOrder(
+        oldStatus: OrderStatus,
+        newStatus: OrderStatus,
+        order: Order
+    ) {
+        if (oldStatus == OrderStatus.AWAITING_PAYMENT &&
+            newStatus == OrderStatus.PAID) {
             for (op in order.orderProducts) {
                 val product = op.product
                 product.quantity -= op.amount
@@ -88,17 +94,14 @@ class OrderServiceImpl(
             }
         }
 
-        if (status == OrderStatus.REFUNDED ||
-            status == OrderStatus.DECLINED ||
-            status == OrderStatus.CANCELLED) {
+        if (newStatus == OrderStatus.REFUNDED ||
+            newStatus == OrderStatus.DECLINED ||
+            newStatus == OrderStatus.CANCELLED) {
             for (op in order.orderProducts) {
                 val product = op.product
                 product.quantity += op.amount
                 productRepository.save(product)
             }
         }
-
-        order.status = status
-        return orderRepository.save(order)
     }
 }
