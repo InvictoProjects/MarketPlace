@@ -8,6 +8,7 @@ import java.time.Instant
 import javax.persistence.EntityNotFoundException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserServiceImpl(private val userRepository: UserRepository) : UserService {
@@ -62,6 +63,17 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
             throw EntityNotFoundException("User with id $id does not exist")
         } else {
             return userRepository.findById(id).get()
+        }
+    }
+
+    @Transactional
+    override fun disableById(id: Long) {
+        if (!userRepository.existsById(id)) {
+            throw EntityNotFoundException("User with id $id does not exist")
+        } else {
+            val user = findById(id)
+            user.enabled = false
+            userRepository.save(user)
         }
     }
 
