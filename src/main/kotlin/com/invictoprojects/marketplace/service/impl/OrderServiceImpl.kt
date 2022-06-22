@@ -5,6 +5,7 @@ import com.invictoprojects.marketplace.persistence.repository.OrderProductReposi
 import com.invictoprojects.marketplace.persistence.repository.OrderRepository
 import com.invictoprojects.marketplace.persistence.repository.ProductRepository
 import com.invictoprojects.marketplace.service.OrderService
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.util.*
 import javax.persistence.EntityNotFoundException
@@ -47,8 +48,9 @@ class OrderServiceImpl(
         return orderRepository.save(order)
     }
 
-    override fun findAll(): MutableIterable<Order> {
-        return orderRepository.findAll()
+    override fun findAllPageable(page: Int, perPage: Int): MutableIterable<Order> {
+        val pageable = PageRequest.of(page, perPage)
+        return orderRepository.findAll(pageable)
     }
 
     override fun findById(id: Long): Order {

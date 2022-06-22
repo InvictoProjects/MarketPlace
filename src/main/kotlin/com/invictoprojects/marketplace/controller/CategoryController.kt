@@ -1,11 +1,11 @@
 package com.invictoprojects.marketplace.controller
 
-import com.invictoprojects.marketplace.service.CategoryService
-import com.invictoprojects.marketplace.service.ProductService
 import com.invictoprojects.marketplace.dto.CategoryCreationDto
 import com.invictoprojects.marketplace.dto.CategoryDto
 import com.invictoprojects.marketplace.dto.MappingUtils
 import com.invictoprojects.marketplace.dto.ProductDto
+import com.invictoprojects.marketplace.service.CategoryService
+import com.invictoprojects.marketplace.service.ProductService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -32,8 +32,9 @@ class CategoryController(
 
     @GetMapping
     @ResponseBody
-    fun getAllCategories(): ResponseEntity<List<CategoryDto>> {
-        val categories = categoryService.findAll()
+    fun getAllCategories(@RequestParam(defaultValue = "0") page: Int,
+                         @RequestParam(name = "per_page", defaultValue = "30") perPage: Int): ResponseEntity<List<CategoryDto>> {
+        val categories = categoryService.findAllPageable(page, perPage)
             .map { category -> MappingUtils.convertToDto(category) }
             .toList()
         return ResponseEntity.ok()

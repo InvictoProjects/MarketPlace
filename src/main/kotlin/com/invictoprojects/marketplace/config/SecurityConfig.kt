@@ -57,14 +57,12 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .csrf().disable()
             .authorizeHttpRequests { authorize ->
                 authorize
-                    .antMatchers("/api/auth/**")
-                    .permitAll()
-                    .antMatchers(HttpMethod.GET, "/test/hello")
-                    .hasAnyAuthority("SCOPE_ADMIN")
-                    .antMatchers(HttpMethod.GET, "/api/posts/")
-                    .permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/posts/**")
-                    .permitAll()
+                    .antMatchers("/api/auth/**").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/categories/**", "/api/products/**").permitAll()
+                    .antMatchers("/api/products/*/review").permitAll()
+                    .antMatchers("/api/orders/**", "/api/users/**").hasAuthority("SCOPE_USER")
+                    .antMatchers("/api/products/**").hasAnyAuthority("SCOPE_SELLER", "SCOPE_ADMIN")
+                    .antMatchers("/api/categories/**").hasAuthority("SCOPE_ADMIN")
                     .antMatchers(
                         "/v2/api-docs",
                         "/configuration/ui",

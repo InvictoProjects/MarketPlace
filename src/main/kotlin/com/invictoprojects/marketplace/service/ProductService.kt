@@ -1,6 +1,7 @@
 package com.invictoprojects.marketplace.service
 
 import com.invictoprojects.marketplace.persistence.model.Product
+import com.invictoprojects.marketplace.persistence.model.User
 import java.math.BigDecimal
 
 interface ProductService {
@@ -9,11 +10,13 @@ interface ProductService {
 
     fun update(product: Product): Product
 
-    fun deleteById(id: Long)
+    fun deleteById(user: User, id: Long)
 
     fun findById(id: Long): Product
 
     fun findAll(): MutableIterable<Product>
+
+    fun findAllPageable(page: Int, perPage: Int): MutableIterable<Product>
 
     fun findByCategoryId(id: Long): MutableIterable<Product>
 
