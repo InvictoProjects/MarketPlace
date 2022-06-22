@@ -84,21 +84,6 @@ class OrderController (private val orderService: OrderService) {
         }
     }
 
-    @PutMapping("/{id}/status")
-    @ResponseBody
-    fun updateOrderStatus(@PathVariable id: Long, @Validated @RequestBody orderStatusDto: OrderStatusDto): ResponseEntity<Any> {
-        return try {
-            val orderStatus = MappingUtils.convertToEntity(orderStatusDto)
-            val order = orderService.findById(id)
-            val updatedOrder = orderService.updateStatus(order, orderStatus)
-            val result = MappingUtils.convertToDto(updatedOrder)
-
-            ResponseEntity.ok().body(result)
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity(mapOf("error" to e.message), HttpStatus.BAD_REQUEST)
-        }
-    }
-
     @DeleteMapping("/{id}")
     @ResponseBody
     fun deleteOrder(@PathVariable id: Long): ResponseEntity<Any> {
