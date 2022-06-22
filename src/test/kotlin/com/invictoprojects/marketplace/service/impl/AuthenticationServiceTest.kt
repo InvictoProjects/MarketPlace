@@ -1,9 +1,10 @@
 package com.invictoprojects.marketplace.service.impl
 
 import com.invictoprojects.marketplace.config.JwtProvider
-import com.invictoprojects.marketplace.dto.AuthenticationResponse
+import com.invictoprojects.marketplace.dto.LoginRequest
 import com.invictoprojects.marketplace.dto.RefreshTokenRequest
 import com.invictoprojects.marketplace.dto.RegisterRequest
+import com.invictoprojects.marketplace.persistence.model.RefreshToken
 import com.invictoprojects.marketplace.persistence.model.Role
 import com.invictoprojects.marketplace.persistence.model.User
 import com.invictoprojects.marketplace.service.RefreshTokenService
@@ -19,6 +20,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.Instant
 
@@ -36,6 +39,9 @@ class AuthenticationServiceTest {
 
     @MockK
     private lateinit var jwtProvider: JwtProvider
+
+    @MockK
+    private lateinit var authentication: Authentication
 
     @MockK
     private lateinit var refreshTokenService: RefreshTokenService
@@ -90,5 +96,32 @@ class AuthenticationServiceTest {
         assertEquals("refreshToken", authenticationResponse.refreshToken)
         assertEquals("token", authenticationResponse.authenticationToken)
         assertNotNull(authenticationResponse.expiresAt)
+    }
+
+    @Test
+    fun testLogin() {
+        every { authentication.name } returns "email@gmail.com"
+        every { authenticationManager.authenticate(any()) } returns authentication
+        every { jwtProvider.jwtExpirationInMillis } returns 1000
+        every { jwtProvider.generateToken(authentication) } returns "token"
+
+        val refreshToken = RefreshToken(
+            "token",
+            Instant.now(),
+            User("username", "email@gmail.com", "passwordHash", Instant.now(), Role.USER, true, true)
+        )
+
+        every { refreshTokenService.generateRefreshToken("email@gmail.com") } returns refreshToken
+
+        authenticationService.login(LoginRequest("email@gmail.com", "password"))
+
+        verify { authenticationManager.authenticate(any()) }
+        verify { jwtProvider.generateToken(authentication) }
+        verify { jwtProvider.jwtExpirationInMillis }
+        verify { refreshTokenService.generateRefreshToken("email@gmail.com") }
+
+        confirmVerified(authenticationManager)
+        confirmVerified(jwtProvider)
+        confirmVerified(refreshTokenService)
     }
 }
