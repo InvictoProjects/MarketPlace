@@ -51,7 +51,7 @@ class ProductController(
     @PostMapping
     @ResponseBody
     fun createProduct(@Validated @RequestBody productCreationDto: ProductCreationDto): ResponseEntity<ProductDto> {
-        val currentUser = userService.getCurrentUser();
+        val currentUser = userService.getCurrentUser()
         productCreationDto.seller = currentUser
         val product = MappingUtils.convertToEntity(productCreationDto)
         val createdProduct = productService.create(product)

@@ -25,7 +25,7 @@ class OrderController (private val orderService: OrderService) {
     @ResponseBody
     fun getAllOrders(
         @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(name = "per_page", defaultValue =         "30") perPage: Int
+        @RequestParam(name = "per_page", defaultValue = "30") perPage: Int
     ): ResponseEntity<List<OrderDto>> {
         val orders = orderService.findAllPageable(page, perPage)
             .map { order -> MappingUtils.convertToDto(order) }
