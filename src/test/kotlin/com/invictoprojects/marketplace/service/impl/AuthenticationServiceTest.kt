@@ -88,5 +88,6 @@ class AuthenticationServiceTest {
         assertEquals("email@gmail.com", authenticationResponse.email)
         assertEquals("refreshToken", authenticationResponse.refreshToken)
         assertEquals("token", authenticationResponse.authenticationToken)
+        assertEquals(1000, authenticationResponse.expiresAt)
     }
 }
