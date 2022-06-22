@@ -86,5 +86,6 @@ class AuthenticationServiceTest {
         confirmVerified(jwtProvider)
 
         assertEquals("email@gmail.com", authenticationResponse.email)
+        assertEquals("refreshToken", authenticationResponse.refreshToken)
     }
 }
