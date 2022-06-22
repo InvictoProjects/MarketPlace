@@ -49,8 +49,9 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
 
     override fun findByName(name: String) = categoryRepository.findByName(name)
 
-    override fun findAllPageable(page: Int, perPage: Int): MutableIterable<Category> {
+    override fun findAllPageable(page: Int, perPage: Int): MutableList<Category> {
         val pageable = PageRequest.of(page, perPage)
         return categoryRepository.findAll(pageable)
+            .toList()
     }
 }

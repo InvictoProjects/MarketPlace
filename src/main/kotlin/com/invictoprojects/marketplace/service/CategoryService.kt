@@ -16,5 +16,5 @@ interface CategoryService {
 
     fun findByName(name: String): Category?
 
-    fun findAllPageable(page: Int, perPage: Int): MutableIterable<Category>
+    fun findAllPageable(page: Int, perPage: Int): MutableList<Category>
 }
