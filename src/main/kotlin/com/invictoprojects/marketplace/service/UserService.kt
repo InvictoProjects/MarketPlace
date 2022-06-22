@@ -16,6 +16,8 @@ interface UserService {
 
     fun findById(id: Long): User?
 
+    fun disableById(id: Long)
+
     fun updatePasswordHash(user: User, newPasswordHash: String)
 
     fun updateRole(user: User, role: Role)
