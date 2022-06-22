@@ -44,6 +44,18 @@ class ProductController(
             .body(products)
     }
 
+    @GetMapping("/search")
+    @ResponseBody
+    fun search(@RequestParam(name = "q") keywords: String,
+               @RequestParam(defaultValue = "0") page: Int,
+               @RequestParam(name = "per_page", defaultValue = "30") perPage: Int): ResponseEntity<List<ProductDto>> {
+        val products = productService.search(keywords, page, perPage)
+            .map { product -> MappingUtils.convertToDto(product) }
+            .toList()
+        return ResponseEntity.ok()
+            .body(products)
+    }
+
     @PostMapping
     @ResponseBody
     fun createProduct(@Validated @RequestBody productCreationDto: ProductCreationDto): ResponseEntity<Any> {
