@@ -21,7 +21,11 @@ class UserDetailsServiceImpl(val userService: UserService) : UserDetailsService 
 
         return org.springframework.security.core.userdetails.User(
             user.email,
-            user.passwordHash, user.enabled, true, true, true,
+            user.passwordHash,
+            user.enabled,
+            true,
+            true,
+            true,
             getAuthorities(user)
         )
     }

@@ -108,8 +108,9 @@ class ProductServiceImpl(
             }
         } else {
             if (rating == null) {
-                product.avgRating = if (ratingCount == 1L) null else
+                product.avgRating = if (ratingCount == 1L) null else {
                     (prevAvgRating * ratingCount - prevRating) / (ratingCount - 1)
+                }
                 product.ratingCount--
             } else {
                 product.avgRating =

@@ -4,11 +4,11 @@ import com.invictoprojects.marketplace.persistence.model.Role
 import com.invictoprojects.marketplace.persistence.model.User
 import com.invictoprojects.marketplace.persistence.repository.UserRepository
 import com.invictoprojects.marketplace.service.UserService
-import java.time.Instant
-import javax.persistence.EntityNotFoundException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
+import javax.persistence.EntityNotFoundException
 
 @Service
 class UserServiceImpl(private val userRepository: UserRepository) : UserService {

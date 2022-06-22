@@ -23,7 +23,7 @@ class AuthenticationServiceImpl(
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManager: AuthenticationManager,
     private val jwtProvider: JwtProvider,
-    private val refreshTokenService: RefreshTokenService,
+    private val refreshTokenService: RefreshTokenService
 ) : AuthenticationService {
 
     @Transactional
@@ -50,7 +50,8 @@ class AuthenticationServiceImpl(
         return AuthenticationResponse(
             token,
             refreshToken,
-            Instant.now().plusMillis(jwtProvider.jwtExpirationInMillis), email
+            Instant.now().plusMillis(jwtProvider.jwtExpirationInMillis),
+            email
         )
     }
 
@@ -65,5 +66,4 @@ class AuthenticationServiceImpl(
             refreshTokenRequest.email
         )
     }
-
 }

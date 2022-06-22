@@ -25,5 +25,4 @@ interface UserService {
     fun getCurrentUser(): User
 
     fun findAllBySubscribedIsTrue(): MutableIterable<User>
-
 }

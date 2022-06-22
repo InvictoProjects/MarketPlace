@@ -52,5 +52,4 @@ class EmailEngine(
         }
         return productNames.trim().toString()
     }
-
 }

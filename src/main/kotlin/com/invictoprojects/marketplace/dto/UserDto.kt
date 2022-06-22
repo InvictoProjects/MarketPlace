@@ -14,6 +14,6 @@ class UserDto(
     var email: String,
 
     @NotNull
-    var subscribed: Boolean,
+    var subscribed: Boolean
 
 )

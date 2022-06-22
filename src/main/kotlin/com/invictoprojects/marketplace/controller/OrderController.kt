@@ -1,16 +1,28 @@
 package com.invictoprojects.marketplace.controller
 
-import com.invictoprojects.marketplace.dto.*
+import com.invictoprojects.marketplace.dto.MappingUtils
+import com.invictoprojects.marketplace.dto.OrderCreationDto
+import com.invictoprojects.marketplace.dto.OrderDetailDto
+import com.invictoprojects.marketplace.dto.OrderDto
 import com.invictoprojects.marketplace.service.OrderService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.RestController
 import java.util.*
 
 @RestController
 @RequestMapping("/api/orders")
-class OrderController (private val orderService: OrderService) {
+class OrderController(private val orderService: OrderService) {
 
     @GetMapping("/{id}")
     @ResponseBody
@@ -52,7 +64,10 @@ class OrderController (private val orderService: OrderService) {
 
     @PostMapping
     @ResponseBody
-    fun createOrder(@Validated @RequestBody orderCreationDto: OrderCreationDto): ResponseEntity<OrderCreationDto> {
+    fun createOrder(
+        @Validated @RequestBody
+        orderCreationDto: OrderCreationDto
+    ): ResponseEntity<OrderCreationDto> {
         val order = MappingUtils.convertToEntity(orderCreationDto)
         val createdOrder = orderService.create(order)
         val result = MappingUtils.convertToCreationDto(createdOrder)
@@ -62,7 +77,11 @@ class OrderController (private val orderService: OrderService) {
 
     @PutMapping("/{id}")
     @ResponseBody
-    fun updateOrder(@PathVariable id: Long, @Validated @RequestBody orderCreationDto: OrderCreationDto): ResponseEntity<OrderDto> {
+    fun updateOrder(
+        @PathVariable id: Long,
+        @Validated @RequestBody
+        orderCreationDto: OrderCreationDto
+    ): ResponseEntity<OrderDto> {
         val order = MappingUtils.convertToEntity(orderCreationDto)
         order.id = id
         val updatedOrder = orderService.update(order)
