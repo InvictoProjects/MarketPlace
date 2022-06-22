@@ -10,5 +10,4 @@ interface RefreshTokenRepository : CrudRepository<RefreshToken, Long> {
     fun deleteByToken(token: String)
 
     fun findByToken(token: String): RefreshToken?
-
 }

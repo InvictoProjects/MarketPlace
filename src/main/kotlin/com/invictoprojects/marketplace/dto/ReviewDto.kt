@@ -1,12 +1,12 @@
 package com.invictoprojects.marketplace.dto
 
+import org.springframework.format.annotation.DateTimeFormat
 import java.time.Instant
 import javax.validation.Valid
 import javax.validation.constraints.FutureOrPresent
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
-import org.springframework.format.annotation.DateTimeFormat
 
 data class ReviewDto(
 

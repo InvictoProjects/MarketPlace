@@ -1,10 +1,13 @@
 package com.invictoprojects.marketplace.service.impl
 
-import com.invictoprojects.marketplace.persistence.model.*
+import com.invictoprojects.marketplace.persistence.model.Order
+import com.invictoprojects.marketplace.persistence.model.OrderProduct
+import com.invictoprojects.marketplace.persistence.model.OrderStatus
 import com.invictoprojects.marketplace.persistence.repository.OrderProductRepository
 import com.invictoprojects.marketplace.persistence.repository.OrderRepository
 import com.invictoprojects.marketplace.persistence.repository.ProductRepository
 import com.invictoprojects.marketplace.service.OrderService
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.util.*
 import javax.persistence.EntityExistsException
@@ -54,8 +57,9 @@ class OrderServiceImpl(
         return orderRepository.save(order)
     }
 
-    override fun findAll(): MutableIterable<Order> {
-        return orderRepository.findAll()
+    override fun findAllPageable(page: Int, perPage: Int): MutableIterable<Order> {
+        val pageable = PageRequest.of(page, perPage)
+        return orderRepository.findAll(pageable)
     }
 
     override fun findById(id: Long): Order {
@@ -85,7 +89,8 @@ class OrderServiceImpl(
         order: Order
     ) {
         if (oldStatus == OrderStatus.AWAITING_PAYMENT &&
-            newStatus == OrderStatus.PAID) {
+            newStatus == OrderStatus.PAID
+        ) {
             for (op in order.orderProducts) {
                 val product = op.product
                 product.quantity -= op.amount
@@ -95,7 +100,8 @@ class OrderServiceImpl(
 
         if (newStatus == OrderStatus.REFUNDED ||
             newStatus == OrderStatus.DECLINED ||
-            newStatus == OrderStatus.CANCELLED) {
+            newStatus == OrderStatus.CANCELLED
+        ) {
             for (op in order.orderProducts) {
                 val product = op.product
                 product.quantity += op.amount

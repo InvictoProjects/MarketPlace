@@ -30,7 +30,6 @@ class RecommendationServiceImpl(
             val randomProduct = products[randomIndex]
             recommendedProducts.add(randomProduct)
         }
-        return recommendedProducts;
+        return recommendedProducts
     }
-
 }

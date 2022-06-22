@@ -20,5 +20,4 @@ class EmailServiceImpl(private val mailSender: JavaMailSender) : EmailService {
 
         mailSender.send(message)
     }
-
 }

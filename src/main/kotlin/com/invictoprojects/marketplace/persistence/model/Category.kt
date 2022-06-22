@@ -1,6 +1,10 @@
 package com.invictoprojects.marketplace.persistence.model
 
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
+import javax.persistence.Table
 
 @Entity
 @Table
@@ -9,7 +13,8 @@ class Category(
     @Column(unique = true)
     var name: String,
 
-    @Id @GeneratedValue var id: Long? = null
+    @Id @GeneratedValue
+    var id: Long? = null
 
 ) {
 
@@ -30,5 +35,4 @@ class Category(
         result = 31 * result + (id?.hashCode() ?: 0)
         return result
     }
-
 }

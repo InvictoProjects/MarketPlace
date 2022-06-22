@@ -1,6 +1,7 @@
 package com.invictoprojects.marketplace.service
 
-import com.invictoprojects.marketplace.persistence.model.*
+import com.invictoprojects.marketplace.persistence.model.Order
+import com.invictoprojects.marketplace.persistence.model.OrderProduct
 import java.util.Date
 
 interface OrderService {
@@ -11,7 +12,7 @@ interface OrderService {
 
     fun update(order: Order): Order
 
-    fun findAll(): MutableIterable<Order>
+    fun findAllPageable(page: Int, perPage: Int): MutableIterable<Order>
 
     fun findById(id: Long): Order
 

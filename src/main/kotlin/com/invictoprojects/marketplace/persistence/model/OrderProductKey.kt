@@ -16,7 +16,7 @@ class OrderProductKey(
         if (other == null || javaClass != other.javaClass) return false
         val that: OrderProductKey = other as OrderProductKey
         return Objects.equals(orderId, that.orderId) &&
-                Objects.equals(productId, that.productId)
+            Objects.equals(productId, that.productId)
     }
 
     override fun hashCode(): Int {
