@@ -4,10 +4,10 @@ import com.invictoprojects.marketplace.persistence.model.Review
 import com.invictoprojects.marketplace.persistence.model.ReviewId
 import com.invictoprojects.marketplace.persistence.repository.ReviewRepository
 import com.invictoprojects.marketplace.service.ReviewService
-import java.time.Instant
-import javax.persistence.EntityNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.time.Instant
+import javax.persistence.EntityNotFoundException
 
 @Service
 class ReviewServiceImpl(private val reviewRepository: ReviewRepository) : ReviewService {

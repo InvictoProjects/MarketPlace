@@ -1,6 +1,7 @@
 package com.invictoprojects.marketplace.service
 
-import com.invictoprojects.marketplace.persistence.model.*
+import com.invictoprojects.marketplace.persistence.model.Order
+import com.invictoprojects.marketplace.persistence.model.OrderProduct
 import java.util.Date
 
 interface OrderService {

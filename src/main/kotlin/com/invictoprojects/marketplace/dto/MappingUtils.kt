@@ -1,6 +1,13 @@
 package com.invictoprojects.marketplace.dto
 
-import com.invictoprojects.marketplace.persistence.model.*
+import com.invictoprojects.marketplace.persistence.model.Category
+import com.invictoprojects.marketplace.persistence.model.Order
+import com.invictoprojects.marketplace.persistence.model.OrderProduct
+import com.invictoprojects.marketplace.persistence.model.OrderProductKey
+import com.invictoprojects.marketplace.persistence.model.OrderStatus
+import com.invictoprojects.marketplace.persistence.model.Product
+import com.invictoprojects.marketplace.persistence.model.Review
+import com.invictoprojects.marketplace.persistence.model.User
 
 object MappingUtils {
 
