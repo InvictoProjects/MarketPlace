@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import java.util.*
 
 internal class CategoryServiceImplTest {
@@ -99,7 +101,7 @@ internal class CategoryServiceImplTest {
     @Test
     fun existsById() {
         val categoryId = 1L
-         every { categoryRepository.existsById(categoryId) } returns true
+        every { categoryRepository.existsById(categoryId) } returns true
 
         val result = categoryService.existsById(categoryId)
 
@@ -120,15 +122,16 @@ internal class CategoryServiceImplTest {
     }
 
     @Test
-    fun findAll() {
+    fun findAllPageable() {
         val category1 = Category("category1", 1)
         val category2 = Category("category1", 2)
-        val categories = listOf(category1, category2)
-        every { categoryRepository.findAll() } returns categories
+        val categories = mutableListOf(category1, category2)
+        val page: Page<Category> = mockk()
+        every { categoryRepository.findAll(any<PageRequest>()) } returns page
+        every { page.toList() } returns categories
 
-        val result = categoryService.findAll()
+        val result = categoryService.findAllPageable(1, 1)
 
-        verify(exactly = 1) { categoryRepository.findAll() }
         assertEquals(categories, result)
     }
 }
