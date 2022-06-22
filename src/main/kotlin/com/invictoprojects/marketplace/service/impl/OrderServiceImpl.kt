@@ -10,6 +10,7 @@ import com.invictoprojects.marketplace.service.OrderService
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.persistence.EntityExistsException
 import javax.persistence.EntityNotFoundException
 
 @Service
@@ -22,8 +23,8 @@ class OrderServiceImpl(
     override fun create(order: Order): Order {
         if (order.id == null) {
             throw IllegalArgumentException("Order id must not be null")
-        } else if (!orderRepository.existsById(order.id!!)) {
-            throw EntityNotFoundException("Order with id ${order.id} does not exist")
+        } else if (orderRepository.existsById(order.id!!)) {
+            throw EntityExistsException("Order with id ${order.id} already exists")
         }
 
         return orderRepository.save(order)
