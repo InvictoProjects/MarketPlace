@@ -5,7 +5,7 @@ import java.util.Date
 
 interface OrderService {
 
-    fun create(customer: User, status: OrderStatus, date: Date, destination: String, products: MutableList<OrderProduct>): Order
+    fun create(order: Order): Order
 
     fun delete(order: Order)
 

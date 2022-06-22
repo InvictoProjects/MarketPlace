@@ -16,14 +16,13 @@ class OrderServiceImpl(
     private val productRepository: ProductRepository
 ) : OrderService {
 
-    override fun create(
-        customer: User,
-        status: OrderStatus,
-        date: Date,
-        destination: String,
-        products: MutableList<OrderProduct>
-    ): Order {
-        val order = Order(customer, status, date, destination, products)
+    override fun create(order: Order): Order {
+        if (order.id == null) {
+            throw IllegalArgumentException("Order id must not be null")
+        } else if (!orderRepository.existsById(order.id!!)) {
+            throw EntityNotFoundException("Order with id ${order.id} does not exist")
+        }
+
         return orderRepository.save(order)
     }
 
