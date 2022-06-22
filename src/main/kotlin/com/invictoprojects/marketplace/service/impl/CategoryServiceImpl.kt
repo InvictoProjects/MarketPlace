@@ -3,6 +3,7 @@ package com.invictoprojects.marketplace.service.impl
 import com.invictoprojects.marketplace.persistence.model.Category
 import com.invictoprojects.marketplace.persistence.repository.CategoryRepository
 import com.invictoprojects.marketplace.service.CategoryService
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
 @Service
@@ -48,6 +49,9 @@ class CategoryServiceImpl(private val categoryRepository: CategoryRepository) : 
 
     override fun findByName(name: String) = categoryRepository.findByName(name)
 
-    override fun findAll(): MutableIterable<Category> = categoryRepository.findAll()
+    override fun findAllPageable(page: Int, perPage: Int): MutableIterable<Category> {
+        val pageable = PageRequest.of(page, perPage)
+        return categoryRepository.findAll(pageable)
+    }
 
 }

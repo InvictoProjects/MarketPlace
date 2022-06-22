@@ -5,6 +5,7 @@ import com.invictoprojects.marketplace.persistence.model.Product
 import com.invictoprojects.marketplace.persistence.repository.ProductRepository
 import com.invictoprojects.marketplace.service.CategoryService
 import com.invictoprojects.marketplace.service.ProductService
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -38,6 +39,11 @@ class ProductServiceImpl(
             throw IllegalArgumentException("Product with a such id does not exists")
         }
         return optional.get()
+    }
+
+    override fun findAllPageable(page: Int, perPage: Int): MutableIterable<Product> {
+        val pageable = PageRequest.of(page, perPage)
+        return productRepository.findAll(pageable)
     }
 
     override fun findAll(): MutableIterable<Product> = productRepository.findAll()

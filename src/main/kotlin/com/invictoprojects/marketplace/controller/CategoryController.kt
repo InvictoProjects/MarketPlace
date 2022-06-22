@@ -32,8 +32,9 @@ class CategoryController(
 
     @GetMapping
     @ResponseBody
-    fun getAllCategories(): ResponseEntity<List<CategoryDto>> {
-        val categories = categoryService.findAll()
+    fun getAllCategories(@RequestParam(defaultValue = "0") page: Int,
+                         @RequestParam(name = "per_page", defaultValue = "30") perPage: Int): ResponseEntity<List<CategoryDto>> {
+        val categories = categoryService.findAllPageable(page, perPage)
             .map { category -> MappingUtils.convertToDto(category) }
             .toList()
         return ResponseEntity.ok()

@@ -32,8 +32,9 @@ class ProductController(
 
     @GetMapping
     @ResponseBody
-    fun getAllProducts(): ResponseEntity<List<ProductDto>> {
-        val products = productService.findAll()
+    fun getAllProducts(@RequestParam(defaultValue = "0") page: Int,
+                       @RequestParam(name = "per_page", defaultValue = "30") perPage: Int): ResponseEntity<List<ProductDto>> {
+        val products = productService.findAllPageable(page, perPage)
             .map { product -> MappingUtils.convertToDto(product) }
             .toList()
         return ResponseEntity.ok()

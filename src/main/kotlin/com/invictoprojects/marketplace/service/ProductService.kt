@@ -15,6 +15,8 @@ interface ProductService {
 
     fun findAll(): MutableIterable<Product>
 
+    fun findAllPageable(page: Int, perPage: Int): MutableIterable<Product>
+
     fun findByCategoryId(id: Long): MutableIterable<Product>
 
     fun findByKeyword(keyword: String): List<Product>
