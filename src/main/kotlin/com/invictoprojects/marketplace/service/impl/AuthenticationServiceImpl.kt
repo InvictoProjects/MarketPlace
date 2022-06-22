@@ -50,7 +50,8 @@ class AuthenticationServiceImpl(
         return AuthenticationResponse(
             token,
             refreshToken,
-            Instant.now().plusMillis(jwtProvider.jwtExpirationInMillis), email
+            Instant.now().plusMillis(jwtProvider.jwtExpirationInMillis),
+            email
         )
     }
 
@@ -65,5 +66,4 @@ class AuthenticationServiceImpl(
             refreshTokenRequest.email
         )
     }
-
 }
