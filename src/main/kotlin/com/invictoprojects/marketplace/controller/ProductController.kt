@@ -5,7 +5,6 @@ import com.invictoprojects.marketplace.dto.ProductCreationDto
 import com.invictoprojects.marketplace.dto.ProductDto
 import com.invictoprojects.marketplace.dto.ReviewCreationDto
 import com.invictoprojects.marketplace.dto.ReviewDto
-import com.invictoprojects.marketplace.exception.NotEnoughPermissionException
 import com.invictoprojects.marketplace.service.ProductService
 import com.invictoprojects.marketplace.service.ReviewService
 import com.invictoprojects.marketplace.service.UserService

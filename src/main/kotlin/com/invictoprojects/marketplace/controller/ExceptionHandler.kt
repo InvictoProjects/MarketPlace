@@ -48,7 +48,11 @@ class ExceptionHandler {
         request: HttpServletRequest
     ): ResponseEntity<ErrorMessage> {
         val errorMessage = ErrorMessage(
-            Instant.now(), status.value(), status.reasonPhrase, messages, request.requestURI
+            Instant.now(),
+            status.value(),
+            status.reasonPhrase,
+            messages,
+            request.requestURI
         )
         return ResponseEntity(errorMessage, status)
     }

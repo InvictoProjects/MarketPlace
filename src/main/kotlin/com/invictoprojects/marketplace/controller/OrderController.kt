@@ -79,7 +79,8 @@ class OrderController(private val orderService: OrderService) {
     @ResponseBody
     fun updateOrder(
         @PathVariable id: Long,
-        @Validated @RequestBody orderCreationDto: OrderCreationDto
+        @Validated @RequestBody
+        orderCreationDto: OrderCreationDto
     ): ResponseEntity<OrderDto> {
         val order = MappingUtils.convertToEntity(orderCreationDto)
         order.id = id
