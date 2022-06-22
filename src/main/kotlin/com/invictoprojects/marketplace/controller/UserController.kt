@@ -5,11 +5,7 @@ import com.invictoprojects.marketplace.dto.UserDto
 import com.invictoprojects.marketplace.persistence.model.User
 import com.invictoprojects.marketplace.service.UserService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 @RestController
@@ -26,4 +22,9 @@ class UserController(
         return ResponseEntity.ok().body(result)
     }
 
+    @PostMapping("/disable/{id}")
+    fun disableUser(@PathVariable id: Long): ResponseEntity<String> {
+        userService.disableById(id)
+        return ResponseEntity.ok().body(String.format("User with id %s disabled", id))
+    }
 }
