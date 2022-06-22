@@ -14,22 +14,18 @@ class OrderController (private val orderService: OrderService) {
 
     @GetMapping("/{id}")
     @ResponseBody
-    fun getOrder(@PathVariable id: Long): ResponseEntity<Any> {
-        return try {
-            val order = orderService.findById(id)
-            val result = MappingUtils.convertToDto(order)
+    fun getOrder(@PathVariable id: Long): ResponseEntity<OrderDto> {
+        val order = orderService.findById(id)
+        val result = MappingUtils.convertToDto(order)
 
-            ResponseEntity.ok().body(result)
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity(mapOf("error" to e.message), HttpStatus.NOT_FOUND)
-        }
+        return ResponseEntity.ok().body(result)
     }
 
     @GetMapping
     @ResponseBody
     fun getAllOrders(
         @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(name = "per_page", defaultValue = "30") perPage: Int
+        @RequestParam(name = "per_page", defaultValue =         "30") perPage: Int
     ): ResponseEntity<List<OrderDto>> {
         val orders = orderService.findAllPageable(page, perPage)
             .map { order -> MappingUtils.convertToDto(order) }
@@ -56,43 +52,31 @@ class OrderController (private val orderService: OrderService) {
 
     @PostMapping
     @ResponseBody
-    fun createOrder(@Validated @RequestBody orderCreationDto: OrderCreationDto): ResponseEntity<Any> {
-        return try {
-            val order = MappingUtils.convertToEntity(orderCreationDto)
-            val createdOrder = orderService.create(order)
-            val result = MappingUtils.convertToCreationDto(createdOrder)
+    fun createOrder(@Validated @RequestBody orderCreationDto: OrderCreationDto): ResponseEntity<OrderCreationDto> {
+        val order = MappingUtils.convertToEntity(orderCreationDto)
+        val createdOrder = orderService.create(order)
+        val result = MappingUtils.convertToCreationDto(createdOrder)
 
-            ResponseEntity(result, HttpStatus.CREATED)
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity(mapOf("error" to e.message), HttpStatus.BAD_REQUEST)
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(result)
     }
 
     @PutMapping("/{id}")
     @ResponseBody
-    fun updateOrder(@PathVariable id: Long, @Validated @RequestBody orderCreationDto: OrderCreationDto): ResponseEntity<Any> {
-        return try {
-            val order = MappingUtils.convertToEntity(orderCreationDto)
-            order.id = id
-            val updatedOrder = orderService.update(order)
-            val result = MappingUtils.convertToDto(updatedOrder)
+    fun updateOrder(@PathVariable id: Long, @Validated @RequestBody orderCreationDto: OrderCreationDto): ResponseEntity<OrderDto> {
+        val order = MappingUtils.convertToEntity(orderCreationDto)
+        order.id = id
+        val updatedOrder = orderService.update(order)
+        val result = MappingUtils.convertToDto(updatedOrder)
 
-            ResponseEntity.ok().body(result)
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity(mapOf("error" to e.message), HttpStatus.BAD_REQUEST)
-        }
+        return ResponseEntity.ok().body(result)
     }
 
     @DeleteMapping("/{id}")
     @ResponseBody
     fun deleteOrder(@PathVariable id: Long): ResponseEntity<Any> {
-        return try {
-            val order = orderService.findById(id)
-            orderService.delete(order)
+        val order = orderService.findById(id)
+        orderService.delete(order)
 
-            ResponseEntity(HttpStatus.NO_CONTENT)
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity(mapOf("error" to e.message), HttpStatus.NOT_FOUND)
-        }
+        return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 }
