@@ -92,7 +92,7 @@ class ProductServiceImpl(
 
     override fun updateAvgRating(product: Product, rating: Int?, prevRating: Int?): Product {
         val productId = product.id
-            ?: throw IllegalArgumentException("There is no product with a such id")
+            ?: throw IllegalArgumentException("Product id must not be null")
         if (!productRepository.existsById(productId)) {
             throw EntityNotFoundException("There is no product with an id = $productId")
         }
