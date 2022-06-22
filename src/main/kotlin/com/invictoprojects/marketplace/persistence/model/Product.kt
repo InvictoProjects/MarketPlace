@@ -17,5 +17,6 @@ class Product(
     var ratingCount: Long = 0,
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = [CascadeType.REMOVE], orphanRemoval = false)
     var reviews: MutableList<Review>? = null,
-    @Id @GeneratedValue var id: Long? = null
+    @Id @GeneratedValue
+    var id: Long? = null
 )

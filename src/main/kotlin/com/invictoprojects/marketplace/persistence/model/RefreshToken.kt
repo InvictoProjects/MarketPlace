@@ -12,5 +12,6 @@ class RefreshToken(
     @OneToOne(fetch = FetchType.LAZY)
     var user: User,
 
-    @Id @GeneratedValue var id: Long? = null
+    @Id @GeneratedValue
+    var id: Long? = null
 )

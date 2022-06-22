@@ -52,7 +52,10 @@ class OrderController (private val orderService: OrderService) {
 
     @PostMapping
     @ResponseBody
-    fun createOrder(@Validated @RequestBody orderCreationDto: OrderCreationDto): ResponseEntity<OrderCreationDto> {
+    fun createOrder(
+        @Validated @RequestBody
+        orderCreationDto: OrderCreationDto
+    ): ResponseEntity<OrderCreationDto> {
         val order = MappingUtils.convertToEntity(orderCreationDto)
         val createdOrder = orderService.create(order)
         val result = MappingUtils.convertToCreationDto(createdOrder)
@@ -62,7 +65,10 @@ class OrderController (private val orderService: OrderService) {
 
     @PutMapping("/{id}")
     @ResponseBody
-    fun updateOrder(@PathVariable id: Long, @Validated @RequestBody orderCreationDto: OrderCreationDto): ResponseEntity<OrderDto> {
+    fun updateOrder(
+        @PathVariable id: Long,
+        @Validated @RequestBody orderCreationDto: OrderCreationDto
+    ): ResponseEntity<OrderDto> {
         val order = MappingUtils.convertToEntity(orderCreationDto)
         order.id = id
         val updatedOrder = orderService.update(order)

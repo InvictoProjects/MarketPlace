@@ -12,5 +12,6 @@ class Order(
     var destination: String,
     @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.REMOVE], orphanRemoval = false)
     var orderProducts: MutableList<OrderProduct> = mutableListOf(),
-    @Id @GeneratedValue var id: Long? = null
+    @Id @GeneratedValue
+    var id: Long? = null
 )

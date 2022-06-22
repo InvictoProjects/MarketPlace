@@ -39,18 +39,24 @@ class ProductController(
 
     @GetMapping("/search")
     @ResponseBody
-    fun search(@RequestParam(name = "q") keywords: String,
-               @RequestParam(defaultValue = "0") page: Int,
-               @RequestParam(name = "per_page", defaultValue = "30") perPage: Int): ResponseEntity<List<ProductDto>> {
+    fun search(
+        @RequestParam(name = "q") keywords: String,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(name = "per_page", defaultValue = "30") perPage: Int
+    ): ResponseEntity<List<ProductDto>> {
         val products = productService.search(keywords, page, perPage)
             .map { product -> MappingUtils.convertToDto(product) }
             .toList()
-        return ResponseEntity.ok().body(products)
+        return ResponseEntity.ok()
+            .body(products)
     }
 
     @PostMapping
     @ResponseBody
-    fun createProduct(@Validated @RequestBody productCreationDto: ProductCreationDto): ResponseEntity<ProductDto> {
+    fun createProduct(
+        @Validated @RequestBody
+        productCreationDto: ProductCreationDto
+    ): ResponseEntity<ProductDto> {
         val currentUser = userService.getCurrentUser()
         productCreationDto.seller = currentUser
         val product = MappingUtils.convertToEntity(productCreationDto)
@@ -63,7 +69,8 @@ class ProductController(
     @ResponseBody
     fun updateProduct(
         @PathVariable id: Long,
-        @Validated @RequestBody productCreationDto: ProductCreationDto
+        @Validated @RequestBody
+        productCreationDto: ProductCreationDto
     ): ResponseEntity<ProductDto> {
         val currentUser = userService.getCurrentUser()
         productCreationDto.seller = currentUser
@@ -85,7 +92,8 @@ class ProductController(
     @PostMapping("/{id}/review")
     fun createReview(
         @PathVariable id: Long,
-        @Validated @RequestBody reviewCreationDto: ReviewCreationDto
+        @Validated @RequestBody
+        reviewCreationDto: ReviewCreationDto
     ): ResponseEntity<ReviewDto> {
         val review = MappingUtils.convertToEntity(reviewCreationDto)
         val product = productService.findById(id)
@@ -100,7 +108,8 @@ class ProductController(
     @PutMapping("/{id}/review")
     fun updateReview(
         @PathVariable id: Long,
-        @Validated @RequestBody reviewCreationDto: ReviewCreationDto
+        @Validated @RequestBody
+        reviewCreationDto: ReviewCreationDto
     ): ResponseEntity<ReviewDto> {
         val review = MappingUtils.convertToEntity(reviewCreationDto)
         val product = productService.findById(id)

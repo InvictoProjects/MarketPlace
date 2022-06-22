@@ -8,7 +8,16 @@ import com.invictoprojects.marketplace.service.CategoryService
 import com.invictoprojects.marketplace.service.ProductService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
 @RestController
@@ -28,8 +37,10 @@ class CategoryController(
 
     @GetMapping
     @ResponseBody
-    fun getAllCategories(@RequestParam(defaultValue = "0") page: Int,
-                         @RequestParam(name = "per_page", defaultValue = "30") perPage: Int): ResponseEntity<List<CategoryDto>> {
+    fun getAllCategories(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(name = "per_page", defaultValue = "30") perPage: Int
+    ): ResponseEntity<List<CategoryDto>> {
         val categories = categoryService.findAllPageable(page, perPage)
             .map { category -> MappingUtils.convertToDto(category) }
             .toList()
@@ -40,7 +51,7 @@ class CategoryController(
     @ResponseBody
     fun getCategoryProducts(@PathVariable id: Long): ResponseEntity<List<ProductDto>> {
         val products = productService.findByCategoryId(id)
-            .map { product -> MappingUtils.convertToDto(product) }
+            .map { MappingUtils.convertToDto(it) }
             .toList()
 
         return ResponseEntity.ok().body(products)
@@ -48,7 +59,10 @@ class CategoryController(
 
     @PostMapping
     @ResponseBody
-    fun createCategory(@Valid @RequestBody categoryCreationDto: CategoryCreationDto): ResponseEntity<CategoryDto> {
+    fun createCategory(
+        @Valid @RequestBody
+        categoryCreationDto: CategoryCreationDto
+    ): ResponseEntity<CategoryDto> {
         val category = MappingUtils.convertToEntity(categoryCreationDto)
         val createdCategory = categoryService.create(category)
         val result = MappingUtils.convertToDto(createdCategory)
@@ -57,7 +71,10 @@ class CategoryController(
 
     @PutMapping("/{id}")
     @ResponseBody
-    fun updateCategory(@PathVariable id: Long, @RequestBody categoryCreationDto: CategoryCreationDto): ResponseEntity<CategoryDto> {
+    fun updateCategory(
+        @PathVariable id: Long,
+        @RequestBody categoryCreationDto: CategoryCreationDto
+    ): ResponseEntity<CategoryDto> {
         val category = MappingUtils.convertToEntity(categoryCreationDto)
         category.id = id
         val updatedCategory = categoryService.update(category)
@@ -71,5 +88,4 @@ class CategoryController(
         categoryService.deleteById(id)
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
-
 }

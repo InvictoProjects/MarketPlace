@@ -14,7 +14,8 @@ class User(
     @Column(name="role_type") var role: Role = Role.USER,
     var enabled: Boolean = false,
     var subscribed: Boolean = true,
-    @Id @GeneratedValue var id: Long? = null
+    @Id @GeneratedValue
+    var id: Long? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
