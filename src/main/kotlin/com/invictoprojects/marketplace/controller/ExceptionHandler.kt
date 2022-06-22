@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import java.time.Instant
+import javax.persistence.EntityExistsException
 import javax.persistence.EntityNotFoundException
 import javax.servlet.http.HttpServletRequest
 
@@ -25,6 +26,7 @@ class ExceptionHandler {
         val status = when (ex) {
             is IllegalArgumentException -> HttpStatus.BAD_REQUEST
             is EntityNotFoundException -> HttpStatus.NOT_FOUND
+            is EntityExistsException -> HttpStatus.CONFLICT
             is InvalidCredentialsException -> HttpStatus.UNAUTHORIZED
             is UsernameNotFoundException -> HttpStatus.NOT_FOUND
             is NotEnoughPermissionException -> HttpStatus.FORBIDDEN
