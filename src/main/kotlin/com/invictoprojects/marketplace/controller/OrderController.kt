@@ -64,7 +64,10 @@ class OrderController(private val orderService: OrderService) {
 
     @PostMapping
     @ResponseBody
-    fun createOrder(@Validated @RequestBody orderCreationDto: OrderCreationDto): ResponseEntity<Any> {
+    fun createOrder(
+        @Validated @RequestBody
+        orderCreationDto: OrderCreationDto
+    ): ResponseEntity<OrderDto> {
         val order = MappingUtils.convertToEntity(orderCreationDto)
         val createdOrder = orderService.create(order)
         val result = MappingUtils.convertToDto(createdOrder)
