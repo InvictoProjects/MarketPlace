@@ -14,7 +14,7 @@ import springfox.documentation.spi.service.contexts.SecurityContext
 class SwaggerConfig {
 
     @Bean
-    fun redditCloneApi(): Docket {
+    fun marketPlaceApi(): Docket {
         return Docket(DocumentationType.SWAGGER_2)
             .securityContexts(listOf(securityContext()))
             .securitySchemes(listOf<SecurityScheme>(apiKey()))
