@@ -6,5 +6,4 @@ import com.invictoprojects.marketplace.persistence.model.User
 interface RecommendationService {
 
     fun getAllUsersWithRecommendedProducts(): List<Pair<User, List<Product>>>
-
 }
