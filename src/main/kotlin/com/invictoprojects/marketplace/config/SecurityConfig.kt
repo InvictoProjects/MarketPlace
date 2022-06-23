@@ -60,6 +60,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                     .antMatchers("/api/auth/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/api/categories/**", "/api/products/**").permitAll()
                     .antMatchers("/api/products/*/review").permitAll()
+                    .antMatchers("/api/users/disable/**").hasAuthority("SCOPE_ADMIN")
                     .antMatchers("/api/orders/**", "/api/users/**").hasAuthority("SCOPE_USER")
                     .antMatchers("/api/products/**").hasAnyAuthority("SCOPE_SELLER", "SCOPE_ADMIN")
                     .antMatchers("/api/categories/**").hasAuthority("SCOPE_ADMIN")
