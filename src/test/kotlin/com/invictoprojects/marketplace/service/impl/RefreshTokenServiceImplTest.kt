@@ -4,6 +4,7 @@ import com.invictoprojects.marketplace.config.JwtProvider
 import com.invictoprojects.marketplace.dto.LoginRequest
 import com.invictoprojects.marketplace.dto.RefreshTokenRequest
 import com.invictoprojects.marketplace.dto.RegisterRequest
+import com.invictoprojects.marketplace.exception.InvalidCredentialsException
 import com.invictoprojects.marketplace.persistence.model.RefreshToken
 import com.invictoprojects.marketplace.persistence.model.Role
 import com.invictoprojects.marketplace.persistence.model.User
@@ -24,6 +25,7 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.Instant
+import org.junit.jupiter.api.assertThrows
 
 @ExtendWith(MockKExtension::class)
 class RefreshTokenServiceImplTest {
@@ -64,6 +66,22 @@ class RefreshTokenServiceImplTest {
         every { refreshTokenRepository.findByToken("refreshToken") } returns refreshToken
 
         refreshTokenService.validateRefreshToken("refreshToken", "test@gmail.com")
+
+        verify { refreshTokenRepository.findByToken("refreshToken") }
+        confirmVerified()
+    }
+
+    @Test
+    fun validateRefreshToken_EmailNotValid_ExceptionThrown() {
+        val instant = Instant.now()
+        val user = User("user", "test@gmail.com", "passwordHash", instant, Role.USER, true, true)
+
+        val refreshToken = RefreshToken("refreshToken", instant, user)
+
+        every { refreshTokenRepository.findByToken("refreshToken") } returns refreshToken
+
+        assertThrows<InvalidCredentialsException> { refreshTokenService
+            .validateRefreshToken("refreshToken", "notvalid@gmail.com") }
 
         verify { refreshTokenRepository.findByToken("refreshToken") }
         confirmVerified()
