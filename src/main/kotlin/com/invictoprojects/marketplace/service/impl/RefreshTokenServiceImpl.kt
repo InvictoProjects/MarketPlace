@@ -20,12 +20,7 @@ class RefreshTokenServiceImpl(
 
     @Transactional
     override fun generateRefreshToken(email: String): RefreshToken {
-        val user = userService.findByEmail(email) ?: throw UsernameNotFoundException(
-            String.format(
-                "User name with email %s not found",
-                email
-            )
-        )
+        val user = userService.findByEmail(email) ?: throw UsernameNotFoundException("User name with email $email not found")
         val token = RefreshToken(
             UUID.randomUUID().toString(),
             Instant.now(),
@@ -36,12 +31,7 @@ class RefreshTokenServiceImpl(
     }
 
     override fun validateRefreshToken(token: String, email: String) {
-        val refreshToken = refreshTokenRepository.findByToken(token) ?: throw EntityNotFoundException(
-            String.format(
-                "Token for email %s not found",
-                email
-            )
-        )
+        val refreshToken = refreshTokenRepository.findByToken(token) ?: throw EntityNotFoundException("Token for email $email not found")
         if (refreshToken.user.email != email) {
             throw InvalidCredentialsException("Invalid credentials for refresh token")
         }
