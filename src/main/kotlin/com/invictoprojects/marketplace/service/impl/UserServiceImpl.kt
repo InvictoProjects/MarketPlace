@@ -67,10 +67,10 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
     }
 
     @Transactional
-    override fun disableById(id: Long) {
+    override fun disableById(id: Long): User {
         val user = findById(id)
         user.enabled = false
-        userRepository.save(user)
+        return userRepository.save(user)
     }
 
     override fun findAllBySubscribedIsTrue() = userRepository.findAllBySubscribedIsTrue()
