@@ -6,10 +6,14 @@ import com.invictoprojects.marketplace.persistence.model.Product
 import com.invictoprojects.marketplace.persistence.model.Role
 import com.invictoprojects.marketplace.persistence.model.User
 import com.invictoprojects.marketplace.persistence.repository.ProductRepository
-import io.mockk.*
+import io.mockk.confirmVerified
+import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.justRun
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -37,7 +41,7 @@ internal class ProductServiceImplTest {
         val categoryId = 1L
         val category = Category("category", categoryId)
         val product = Product(
-            name = "product1",
+            name = "product",
             price = BigDecimal.valueOf(99.99),
             quantity = 10L,
             category = category
@@ -56,29 +60,31 @@ internal class ProductServiceImplTest {
         val category1 = Category("category1", categoryId)
         val category2 = Category("category2", categoryId)
         val product = Product(
-            name = "product1",
+            name = "product",
             price = BigDecimal.valueOf(99.99),
             quantity = 10L,
             category = category1
         )
         every { categoryService.findById(categoryId) } returns category2
 
-        assertThrows<java.lang.IllegalArgumentException> { productService.create(product) }
+        assertThrows<IllegalArgumentException> { productService.create(product) }
     }
 
     @Test
     fun update_ReturnUpdated() {
         val categoryId = 1L
+        val productId = 22L
         val category = Category("category", categoryId)
         val product = Product(
-            id = 1L,
+            id = productId,
             name = "product1",
             price = BigDecimal.valueOf(99.99),
             quantity = 10L,
             category = category
         )
-        every { productRepository.existsById(1L) } returns true
+        every { productRepository.existsById(productId) } returns true
         every { categoryService.findById(categoryId) } returns category
+        every { productRepository.findById(productId) } returns Optional.of(product)
         every { productRepository.save(product) } returns product
 
         val result = productService.update(product)
@@ -88,16 +94,15 @@ internal class ProductServiceImplTest {
 
     @Test
     fun update_ProductIsNotExists_ThrowException() {
-        val categoryId = 1L
-        val category = Category("category", categoryId)
+        val productId = 23L
         val product = Product(
-            id = 1L,
+            id = productId,
             name = "product1",
             price = BigDecimal.valueOf(99.99),
             quantity = 10L,
-            category = category
+            category = Category("category", 1L)
         )
-        every { productRepository.existsById(1L) } returns false
+        every { productRepository.existsById(productId) } returns false
 
         assertThrows<IllegalArgumentException> { productService.update(product) }
     }
@@ -105,65 +110,55 @@ internal class ProductServiceImplTest {
     @Test
     fun update_CategoryIsNotExists_ThrowException() {
         val categoryId = 1L
-        val category = Category("category", categoryId)
+        val productId = 5L
         val product = Product(
-            id = 1L,
+            id = productId,
             name = "product1",
-            price = BigDecimal.valueOf(99.99),
-            quantity = 10L,
-            category = category
+            price = BigDecimal.valueOf(99.80),
+            quantity = 190L,
+            category = Category("category", categoryId)
         )
-        every { productRepository.existsById(1L) } returns false
-        every { categoryService.findById(categoryId) } returns Category("")
+        val category = Category("category2")
+        every { productRepository.existsById(productId) } returns false
+        every { categoryService.findById(categoryId) } returns category
 
         assertThrows<IllegalArgumentException> { productService.update(product) }
     }
 
     @Test
     fun deleteById() {
-        val user = User(
-            username = "user1",
+        val productSeller = User(
+            username = "owner",
             role = Role.SELLER,
-            email = "test@mail.com",
+            email = "seller@mail.com",
             passwordHash = "3r23rawcrtac34wta34xf"
         )
         val productId = 1L
-        val category = Category("category", 1L)
         val product = Product(
-            id = 1L,
+            id = productId,
             name = "product1",
-            price = BigDecimal.valueOf(99.99),
+            price = BigDecimal.valueOf(3.99),
             quantity = 10L,
-            category = category,
-            seller = user
+            category = Category("category65", 65L),
+            seller = productSeller
         )
-
         every { productRepository.findById(productId) } returns Optional.of(product)
         justRun { productRepository.deleteById(productId) }
 
-        productService.deleteById(user, productId)
+        productService.deleteById(productSeller, productId)
+
         verify { productRepository.deleteById(productId) }
     }
 
     @Test
     fun deleteById_ProductIsNotExists_ThrowException() {
+        val productId = 754L
         val user = User(
             username = "user1",
-            role = Role.SELLER,
+            role = Role.USER,
             email = "test@mail.com",
-            passwordHash = "3r23rawcrtac34wta34xf"
+            passwordHash = "o8ygouygjhg"
         )
-        val productId = 1L
-        val category = Category("category", 1L)
-        val product = Product(
-            id = 1L,
-            name = "product1",
-            price = BigDecimal.valueOf(99.99),
-            quantity = 10L,
-            category = category,
-            seller = user
-        )
-
         every { productRepository.findById(productId) } returns Optional.empty()
 
         assertThrows<IllegalArgumentException> { productService.deleteById(user, productId) }
@@ -171,29 +166,27 @@ internal class ProductServiceImplTest {
 
     @Test
     fun deleteById_NotEnoughPermission_ThrowException() {
+        val productSeller = User(
+            username = "owner",
+            role = Role.SELLER,
+            email = "seller@mail.com",
+            passwordHash = "3r23rawcrtac34wta34xf"
+        )
+        val productId = 1L
+        val product = Product(
+            id = productId,
+            name = "product1",
+            price = BigDecimal.valueOf(3.99),
+            quantity = 10L,
+            category = Category("category65", 65L),
+            seller = productSeller
+        )
         val user = User(
             username = "user1",
             role = Role.USER,
             email = "test@mail.com",
-            passwordHash = "3r23rawcrtac34wta34xf"
+            passwordHash = "o8ygouygjhg"
         )
-        val use2 = User(
-            username = "user1",
-            role = Role.SELLER,
-            email = "test@mail.com",
-            passwordHash = "3r23rawcrtac34wta34xf"
-        )
-        val productId = 1L
-        val category = Category("category", 1L)
-        val product = Product(
-            id = 1L,
-            name = "product1",
-            price = BigDecimal.valueOf(99.99),
-            quantity = 10L,
-            category = category,
-            seller = use2
-        )
-
         every { productRepository.findById(productId) } returns Optional.of(product)
 
         assertThrows<NotEnoughPermissionException> { productService.deleteById(user, productId) }
@@ -202,13 +195,12 @@ internal class ProductServiceImplTest {
     @Test
     fun findById() {
         val productId = 1L
-        val category = Category("category", 1L)
         val product = Product(
-            id = 1L,
-            name = "product1",
-            price = BigDecimal.valueOf(99.99),
-            quantity = 10L,
-            category = category
+            id = productId,
+            name = "product5",
+            price = BigDecimal.valueOf(9.99),
+            quantity = 104L,
+            category = Category("category2", 235L)
         )
         every { productRepository.findById(productId) } returns Optional.of(product)
 
@@ -220,139 +212,118 @@ internal class ProductServiceImplTest {
     @Test
     fun findById_ProductIsNotExists_ThrowException() {
         val productId = 1L
-        val category = Category("category", 1L)
-        val product = Product(
-            id = 1L,
-            name = "product1",
-            price = BigDecimal.valueOf(99.99),
-            quantity = 10L,
-            category = category
-        )
-        every { productRepository.findById(productId) } returns Optional.of(product)
+        every { productRepository.findById(productId) } returns Optional.empty()
 
-        val result = productService.findById(productId)
-
-        assertEquals(product, result)
+        assertThrows<IllegalArgumentException> { productService.findById(productId) }
     }
 
     @Test
     fun findAll() {
-        every { productRepository.findAll() } returns mutableListOf()
+        val product1 = Product(
+            id = 5L,
+            name = "product5",
+            price = BigDecimal.valueOf(69.00),
+            quantity = 60L,
+            category = Category("category1", 1L)
+        )
+        val product2 = Product(
+            id = 124L,
+            name = "product124",
+            price = BigDecimal.valueOf(1),
+            quantity = 10L,
+            category = Category("category2", 2L)
+        )
+        val products = mutableListOf(product1, product2)
+        every { productRepository.findAll() } returns products
+
         productService.findAll()
+
         verify { productRepository.findAll() }
     }
 
     @Test
     fun findAllPageable() {
-        val category1 = Category("category", 1L)
+        val page: Page<Product> = mockk()
+        val pageNumber = 1
+        val perPage = 10
         val product1 = Product(
             id = 1L,
             name = "product1",
-            price = BigDecimal.valueOf(99.99),
-            quantity = 10L,
-            category = category1
+            price = BigDecimal.valueOf(69.99),
+            quantity = 60L,
+            category = Category("category1", 1L)
         )
-        val category2 = Category("category", 1L)
         val product2 = Product(
-            id = 1L,
-            name = "product1",
+            id = 2L,
+            name = "product2",
             price = BigDecimal.valueOf(99.99),
             quantity = 10L,
-            category = category2
+            category = Category("category2", 2L)
         )
         val products = mutableListOf(product1, product2)
-        val page: Page<Product> = mockk()
         every { productRepository.findAll(any<PageRequest>()) } returns page
         every { page.toList() } returns products
 
-        val result = productService.findAllPageable(1, 1)
+        val result = productService.findAllPageable(pageNumber, perPage)
 
         assertEquals(products, result)
     }
 
     @Test
     fun search() {
-        val category1 = Category("category", 1L)
-        val product1 = Product(
-            id = 1L,
-            name = "product1",
-            price = BigDecimal.valueOf(99.99),
-            quantity = 10L,
-            category = category1,
-            description = "keyword1"
-        )
-        val category2 = Category("category", 1L)
-        val product2 = Product(
-            id = 1L,
-            name = "product1",
-            price = BigDecimal.valueOf(99.99),
-            quantity = 10L,
-            category = category2,
-            description = "keyword2"
-        )
-        val products = mutableListOf(product1, product2)
         val page: Page<Product> = mockk()
-        every { productRepository.findByKeyword("keyword1", any<PageRequest>()) } returns page
-        every { page.toList() } returns mutableListOf(product1)
+        val pageNumber = 2
+        val perPage = 14
+        val keyword = "keyword"
+        val category = Category("category", 1L)
+        val product = Product(
+            id = 1L,
+            name = "product1",
+            price = BigDecimal.valueOf(99.99),
+            quantity = 10L,
+            category = category,
+            description = "$keyword another_keyword"
+        )
+        val products = mutableListOf(product)
+        every { productRepository.findByKeyword(keyword, any<PageRequest>()) } returns page
+        every { page.toList() } returns mutableListOf(product)
 
-        val result = productService.search("keyword1", 1, 1)
+        val result = productService.search(keyword, pageNumber, perPage)
 
-        assertEquals(mutableListOf(product1), result)
+        assertEquals(products, result)
     }
 
     @Test
     fun findByCategoryId() {
-        val category1 = Category("category", 1L)
-        val categoryId = 1L
+        val categoryId = 11L
+        val category = Category("category1", categoryId)
         val product1 = Product(
             id = 1L,
             name = "product1",
-            price = BigDecimal.valueOf(99.99),
+            price = BigDecimal.valueOf(59.99),
             quantity = 10L,
-            category = category1,
-            description = "keyword1"
+            category = category
         )
-        val category2 = Category("category", 1L)
         val product2 = Product(
-            id = 1L,
+            id = 2L,
             name = "product1",
             price = BigDecimal.valueOf(99.99),
-            quantity = 10L,
-            category = category2,
-            description = "keyword2"
+            quantity = 50L,
+            category = category
         )
         val products = mutableListOf(product1, product2)
         every { categoryService.existsById(categoryId) } returns true
-        every { categoryService.findById(categoryId) } returns category1
-        every { productRepository.findByCategory(category1) } returns mutableListOf(product1)
+        every { categoryService.findById(categoryId) } returns category
+        every { productRepository.findByCategory(category) } returns products
 
-        val found = productService.findByCategoryId(categoryId)
+        val result = productService.findByCategoryId(categoryId)
 
-        assertEquals(mutableListOf(product1), found)
+        assertEquals(products, result)
     }
 
     @Test
     fun findByCategoryId_CategoryIsNotExists_ThrowException() {
-        val category1 = Category("category", 1L)
         val categoryId = 1L
-        val product1 = Product(
-            id = 1L,
-            name = "product1",
-            price = BigDecimal.valueOf(99.99),
-            quantity = 10L,
-            category = category1,
-            description = "keyword1"
-        )
-        val category2 = Category("category", 1L)
-        val product2 = Product(
-            id = 1L,
-            name = "product1",
-            price = BigDecimal.valueOf(99.99),
-            quantity = 10L,
-            category = category2,
-            description = "keyword2"
-        )
-        val products = mutableListOf(product1, product2)
         every { categoryService.existsById(categoryId) } returns false
 
         assertThrows<IllegalArgumentException> { productService.findByCategoryId(categoryId) }
@@ -360,9 +331,12 @@ internal class ProductServiceImplTest {
 
     @Test
     fun checkCategory_WrongCategory_ThrowsException() {
-        val category = Category("category", 1)
-        every { categoryService.findById(1) } returns Category("categosdfsdfry", 1)
-        assertThrows<IllegalArgumentException> { productService.checkCategory(category) }
+        val categoryId = 23L
+        val category1 = Category("category1", categoryId)
+        val category2 = Category("category2", categoryId)
+        every { categoryService.findById(categoryId) } returns category2
+
+        assertThrows<IllegalArgumentException> { productService.checkCategory(category1) }
     }
 
     @Test
