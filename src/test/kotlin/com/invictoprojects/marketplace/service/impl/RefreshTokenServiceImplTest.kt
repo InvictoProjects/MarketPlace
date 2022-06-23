@@ -88,4 +88,14 @@ class RefreshTokenServiceImplTest {
         verify { refreshTokenRepository.findByToken("refreshToken") }
         confirmVerified()
     }
+
+    @Test
+    fun deleteRefreshToken_TokenValid_TokenDeleted() {
+        every { refreshTokenRepository.deleteByToken("refreshToken") } returns Unit
+
+        refreshTokenService.deleteRefreshToken("refreshToken")
+
+        verify { refreshTokenRepository.deleteByToken("refreshToken") }
+        confirmVerified()
+    }
 }
