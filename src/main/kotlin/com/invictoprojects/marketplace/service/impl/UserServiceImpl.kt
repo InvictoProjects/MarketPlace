@@ -14,7 +14,7 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
 
     override fun create(username: String, email: String, passwordHash: String): User {
         if (userRepository.existsByEmail(email)) {
-            throw IllegalArgumentException("User with email %s already exists $email")
+            throw IllegalArgumentException("User with email $email already exists")
         }
         val user = User(username, email, passwordHash, Instant.now(), Role.USER, true)
         return userRepository.save(user)
