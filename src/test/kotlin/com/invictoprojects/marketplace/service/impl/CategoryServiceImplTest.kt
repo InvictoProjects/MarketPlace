@@ -3,6 +3,9 @@ package com.invictoprojects.marketplace.service.impl
 import com.invictoprojects.marketplace.persistence.model.Category
 import com.invictoprojects.marketplace.persistence.repository.CategoryRepository
 import io.mockk.every
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
 import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
@@ -10,14 +13,19 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import java.util.*
 
+@ExtendWith(MockKExtension::class)
 internal class CategoryServiceImplTest {
 
-    private val categoryRepository: CategoryRepository = mockk()
-    private val categoryService = CategoryServiceImpl(categoryRepository)
+    @MockK
+    private lateinit var categoryRepository: CategoryRepository
+
+    @InjectMockKs
+    private lateinit var categoryService: CategoryServiceImpl
 
     @Test
     fun create_ReturnCreated() {
@@ -33,7 +41,7 @@ internal class CategoryServiceImplTest {
 
     @Test
     fun create_CategoryAlreadyExists_ThrowException() {
-        val categoryName = "category1"
+        val categoryName = "category2"
         val category = Category(categoryName)
         every { categoryRepository.existsByName(categoryName) } returns true
 
@@ -42,8 +50,8 @@ internal class CategoryServiceImplTest {
 
     @Test
     fun update_ReturnUpdated() {
-        val categoryId = 1L
-        val category = Category("category1", categoryId)
+        val categoryId = 3L
+        val category = Category("category3", categoryId)
         every { categoryRepository.existsById(categoryId) } returns true
         every { categoryRepository.save(category) } returns category
 
@@ -54,7 +62,7 @@ internal class CategoryServiceImplTest {
 
     @Test
     fun update_CategoryIsNotExists_ThrowException() {
-        val categoryId = 1L
+        val categoryId = 4L
         val category = Category("category1", categoryId)
         every { categoryRepository.existsById(categoryId) } returns false
 
@@ -68,7 +76,7 @@ internal class CategoryServiceImplTest {
         justRun { categoryRepository.deleteById(categoryId) }
 
         categoryService.deleteById(categoryId)
-        verify(exactly = 1) { categoryRepository.deleteById(categoryId) }
+        verify { categoryRepository.deleteById(categoryId) }
     }
 
     @Test
@@ -95,7 +103,7 @@ internal class CategoryServiceImplTest {
         val categoryId = 1L
         every { categoryRepository.findById(categoryId) } returns Optional.empty()
 
-        assertThrows<java.lang.IllegalArgumentException> { categoryService.findById(categoryId) }
+        assertThrows<IllegalArgumentException> { categoryService.findById(categoryId) }
     }
 
     @Test
@@ -105,7 +113,7 @@ internal class CategoryServiceImplTest {
 
         val result = categoryService.existsById(categoryId)
 
-        verify(exactly = 1) { categoryRepository.existsById(categoryId) }
+        verify { categoryRepository.existsById(categoryId) }
         assertTrue(result)
     }
 
@@ -117,20 +125,23 @@ internal class CategoryServiceImplTest {
 
         val result = categoryService.findByName(categoryName)
 
-        verify(exactly = 1) { categoryRepository.findByName(categoryName) }
+        verify { categoryRepository.findByName(categoryName) }
         assertEquals(category, result)
     }
 
     @Test
     fun findAllPageable() {
-        val category1 = Category("category1", 1)
-        val category2 = Category("category1", 2)
-        val categories = mutableListOf(category1, category2)
         val page: Page<Category> = mockk()
+
+        val pageNumber = 1
+        val perPage = 10
+        val category1 = Category("category1", 1)
+        val category2 = Category("category2", 2)
+        val categories = mutableListOf(category1, category2)
         every { categoryRepository.findAll(any<PageRequest>()) } returns page
         every { page.toList() } returns categories
 
-        val result = categoryService.findAllPageable(1, 1)
+        val result = categoryService.findAllPageable(pageNumber, perPage)
 
         assertEquals(categories, result)
     }
