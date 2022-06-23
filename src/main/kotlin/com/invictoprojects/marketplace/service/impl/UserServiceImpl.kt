@@ -68,10 +68,6 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
 
     @Transactional
     override fun disableById(id: Long) {
-        if (!userRepository.existsById(id)) {
-            throw EntityNotFoundException("User with id $id does not exist")
-        }
-
         val user = findById(id)
         user.enabled = false
         userRepository.save(user)
