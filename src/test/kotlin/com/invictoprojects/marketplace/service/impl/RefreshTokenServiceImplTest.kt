@@ -53,4 +53,19 @@ class RefreshTokenServiceImplTest {
         verify { refreshTokenRepository.save(any()) }
         confirmVerified()
     }
+
+    @Test
+    fun validateRefreshToken_EmailValid_ExceptionNotThrown() {
+        val instant = Instant.now()
+        val user = User("user", "test@gmail.com", "passwordHash", instant, Role.USER, true, true)
+
+        val refreshToken = RefreshToken("refreshToken", instant, user)
+
+        every { refreshTokenRepository.findByToken("refreshToken") } returns refreshToken
+
+        refreshTokenService.validateRefreshToken("refreshToken", "test@gmail.com")
+
+        verify { refreshTokenRepository.findByToken("refreshToken") }
+        confirmVerified()
+    }
 }
