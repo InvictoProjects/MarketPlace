@@ -19,12 +19,14 @@ class ProductServiceImpl(
     private val categoryService: CategoryService
 ) : ProductService {
 
+    @Transactional
     override fun create(product: Product): Product {
         val inputCategory = product.category
         checkCategory(inputCategory)
         return productRepository.save(product)
     }
 
+    @Transactional
     override fun update(product: Product): Product {
         if (!productRepository.existsById(product.id!!)) {
             throw IllegalArgumentException("There is no product with a such id")

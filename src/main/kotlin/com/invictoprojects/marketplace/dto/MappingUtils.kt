@@ -11,20 +11,20 @@ import com.invictoprojects.marketplace.persistence.model.User
 
 object MappingUtils {
 
-    fun convertToEntity(categoryDto: CategoryDto): Category {
-        return Category(
-            id = categoryDto.id,
-            name = categoryDto.name
-        )
-    }
-
     fun convertToEntity(categoryCreationDto: CategoryCreationDto): Category {
         return Category(
             name = categoryCreationDto.name
         )
     }
 
-    fun convertToEntity(productDto: ProductDto): Product {
+    private fun convertToEntity(categoryDto: CategoryDto): Category {
+        return Category(
+            id = categoryDto.id,
+            name = categoryDto.name
+        )
+    }
+
+    private fun convertToEntity(productDto: ProductDto): Product {
         return Product(
             id = productDto.id,
             name = productDto.name,
@@ -57,7 +57,7 @@ object MappingUtils {
         )
     }
 
-    fun convertToDto(user: User): UserDto {
+    private fun convertToDto(user: User): UserDto {
         return UserDto(
             username = user.username,
             email = user.email,
@@ -95,17 +95,12 @@ object MappingUtils {
         content = review.content
     )
 
-    fun convertToEntity(reviewDto: ReviewDto) = Review(
-        rating = reviewDto.rating,
-        content = reviewDto.content
-    )
-
     fun convertToEntity(reviewCreationDto: ReviewCreationDto) = Review(
         rating = reviewCreationDto.rating,
         content = reviewCreationDto.content
     )
 
-    fun convertToEntity(orderDto: OrderDto): Order {
+    private fun convertToEntity(orderDto: OrderDto): Order {
         return Order(
             id = orderDto.id,
             customer = convertToEntity(orderDto.customer),
@@ -136,26 +131,17 @@ object MappingUtils {
         )
     }
 
-    fun convertToCreationDto(order: Order): OrderCreationDto {
-        return OrderCreationDto(
-            customer = convertToDto(order.customer),
-            status = convertToDto(order.status),
-            date = order.date,
-            destination = order.destination
-        )
-    }
-
-    fun convertToEntity(orderStatusDto: OrderStatusDto): OrderStatus {
+    private fun convertToEntity(orderStatusDto: OrderStatusDto): OrderStatus {
         return OrderStatus.valueOf(orderStatusDto.status.uppercase())
     }
 
-    fun convertToDto(orderStatus: OrderStatus): OrderStatusDto {
+    private fun convertToDto(orderStatus: OrderStatus): OrderStatusDto {
         return OrderStatusDto(
             status = orderStatus.toString()
         )
     }
 
-    fun convertToEntity(orderDetailDto: OrderDetailDto): OrderProduct {
+    private fun convertToEntity(orderDetailDto: OrderDetailDto): OrderProduct {
         return OrderProduct(
             id = OrderProductKey(
                 orderDetailDto.order.id,
