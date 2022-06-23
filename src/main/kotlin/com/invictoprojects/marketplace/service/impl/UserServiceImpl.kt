@@ -70,11 +70,11 @@ class UserServiceImpl(private val userRepository: UserRepository) : UserService 
     override fun disableById(id: Long) {
         if (!userRepository.existsById(id)) {
             throw EntityNotFoundException("User with id $id does not exist")
-        } else {
-            val user = findById(id)
-            user.enabled = false
-            userRepository.save(user)
         }
+
+        val user = findById(id)
+        user.enabled = false
+        userRepository.save(user)
     }
 
     override fun findAllBySubscribedIsTrue() = userRepository.findAllBySubscribedIsTrue()
