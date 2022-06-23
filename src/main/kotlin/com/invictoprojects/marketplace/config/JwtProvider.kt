@@ -25,7 +25,7 @@ class JwtProvider(
 
     fun generateTokenWithEmail(email: String): String {
         val user = userService.findByEmail(email)
-            ?: throw UsernameNotFoundException(String.format("User name with email %s", email))
+            ?: throw UsernameNotFoundException("User name with email $email")
 
         val claims = JwtClaimsSet.builder()
             .issuer("self")

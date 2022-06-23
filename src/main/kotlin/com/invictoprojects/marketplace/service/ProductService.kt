@@ -13,13 +13,13 @@ interface ProductService {
 
     fun findById(id: Long): Product
 
-    fun findAll(): MutableIterable<Product>
+    fun findAll(): MutableList<Product>
 
-    fun search(keywords: String, page: Int, perPage: Int): MutableIterable<Product>
+    fun search(keywords: String, page: Int, perPage: Int): MutableList<Product>
 
-    fun findAllPageable(page: Int, perPage: Int): MutableIterable<Product>
+    fun findAllPageable(page: Int, perPage: Int): MutableList<Product>
 
-    fun findByCategoryId(id: Long): MutableIterable<Product>
+    fun findByCategoryId(id: Long): MutableList<Product>
 
     fun updateAvgRating(product: Product, rating: Int? = null, prevRating: Int? = null): Product
 }

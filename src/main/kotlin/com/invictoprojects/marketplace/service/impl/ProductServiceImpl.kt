@@ -19,12 +19,14 @@ class ProductServiceImpl(
     private val categoryService: CategoryService
 ) : ProductService {
 
+    @Transactional
     override fun create(product: Product): Product {
         val inputCategory = product.category
         checkCategory(inputCategory)
         return productRepository.save(product)
     }
 
+    @Transactional
     override fun update(product: Product): Product {
         if (!productRepository.existsById(product.id!!)) {
             throw IllegalArgumentException("There is no product with a such id")
@@ -47,7 +49,7 @@ class ProductServiceImpl(
             throw IllegalArgumentException("Product with a such id does not exists")
         }
         val product = optional.get()
-        if (user == product.seller || Role.USER == user.role) {
+        if (user == product.seller || Role.ADMIN == user.role) {
             productRepository.deleteById(id)
         } else {
             throw NotEnoughPermissionException("Don't have permission to delete this product")
@@ -62,25 +64,31 @@ class ProductServiceImpl(
         return optional.get()
     }
 
-    override fun findAllPageable(page: Int, perPage: Int): MutableIterable<Product> {
+    override fun findAllPageable(page: Int, perPage: Int): MutableList<Product> {
         val pageable = PageRequest.of(page, perPage)
         return productRepository.findAll(pageable)
+            .toList()
     }
 
-    override fun findAll(): MutableIterable<Product> = productRepository.findAll()
+    override fun findAll(): MutableList<Product> {
+        return productRepository.findAll()
+            .toMutableList()
+    }
 
     @Transactional
-    override fun findByCategoryId(id: Long): MutableIterable<Product> {
+    override fun findByCategoryId(id: Long): MutableList<Product> {
         if (!categoryService.existsById(id)) {
             throw IllegalArgumentException("There is no category with a such id")
         }
         val category = categoryService.findById(id)
         return productRepository.findByCategory(category)
+            .toMutableList()
     }
 
     override fun search(keywords: String, page: Int, perPage: Int): MutableList<Product> {
         val pageable = PageRequest.of(page, perPage)
-        return productRepository.findByKeyword(keywords, pageable).toList()
+        return productRepository.findByKeyword(keywords, pageable)
+            .toList()
     }
 
     fun checkCategory(category: Category) {
