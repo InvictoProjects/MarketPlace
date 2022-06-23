@@ -37,4 +37,20 @@ class RefreshTokenServiceImplTest {
     @InjectMockKs
     private lateinit var refreshTokenService: RefreshTokenServiceImpl
 
+    @Test
+    fun generateRefreshToken_EmailValid_TokenGenerated() {
+        val instant = Instant.now()
+        val user = User("user", "test@gmail.com", "passwordHash", instant, Role.USER, true, true)
+
+        val refreshToken = RefreshToken("refreshToken", instant, user)
+
+        every { userService.findByEmail("test@gmail.com") } returns user
+        every { refreshTokenRepository.save(any()) } returns refreshToken
+
+        refreshTokenService.generateRefreshToken("test@gmail.com")
+
+        verify { userService.findByEmail("test@gmail.com") }
+        verify { refreshTokenRepository.save(any()) }
+        confirmVerified()
+    }
 }
