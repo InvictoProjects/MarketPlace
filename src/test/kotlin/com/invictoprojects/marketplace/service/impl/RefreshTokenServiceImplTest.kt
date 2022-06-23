@@ -44,16 +44,18 @@ class RefreshTokenServiceImplTest {
         val instant = Instant.now()
         val user = User("user", "test@gmail.com", "passwordHash", instant, Role.USER, true, true)
 
-        val refreshToken = RefreshToken("refreshToken", instant, user)
-
         every { userService.findByEmail("test@gmail.com") } returns user
-        every { refreshTokenRepository.save(any()) } returns refreshToken
+        every { refreshTokenRepository.save(any()) } returnsArgument 0
 
-        refreshTokenService.generateRefreshToken("test@gmail.com")
+        val token = refreshTokenService.generateRefreshToken("test@gmail.com")
 
         verify { userService.findByEmail("test@gmail.com") }
         verify { refreshTokenRepository.save(any()) }
         confirmVerified()
+
+        assertNotNull(token.createdDate)
+        assertNotNull(token.token)
+        assertEquals(user, token.user)
     }
 
     @Test
