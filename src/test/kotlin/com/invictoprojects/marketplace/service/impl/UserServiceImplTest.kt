@@ -329,5 +329,9 @@ internal class UserServiceImplTest {
         verify { userRepository.findById(10) }
 
         confirmVerified(userRepository)
+        assertEquals(false, savedUser.enabled)
+        assertEquals("user", savedUser.username)
+        assertEquals("user@gmail.com", savedUser.email)
+        assertEquals("passwordHash", savedUser.passwordHash)
     }
 }
