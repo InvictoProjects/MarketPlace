@@ -308,4 +308,30 @@ internal class UserServiceImplTest {
         verify(exactly = 0) { userRepository.save(user) }
         confirmVerified(userRepository)
     }
+
+    @Test
+    fun disableById_IdValid_UserDisabled() {
+        val user = User(
+            username = "user",
+            email = "user@gmail.com",
+            passwordHash = "passwordHash",
+            id = 1
+        )
+
+        every { userRepository.existsById(10) } returns true
+        every { userRepository.save(any()) } returnsArgument 0
+        every { userRepository.findById(10) } returns Optional.of(user)
+
+        val savedUser = userService.disableById(10)
+
+        verify { userRepository.existsById(10) }
+        verify { userRepository.save(any()) }
+        verify { userRepository.findById(10) }
+
+        confirmVerified(userRepository)
+        assertEquals(false, savedUser.enabled)
+        assertEquals("user", savedUser.username)
+        assertEquals("user@gmail.com", savedUser.email)
+        assertEquals("passwordHash", savedUser.passwordHash)
+    }
 }
